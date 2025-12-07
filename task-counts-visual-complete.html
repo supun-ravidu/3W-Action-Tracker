@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Counts Display - Visual Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 via-purple-50 to-pink-50 min-h-screen p-8">
+    <div class="max-w-7xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-12 fade-in">
+            <h1 class="text-5xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 bg-clip-text text-transparent mb-4">
+                ✅ Task Counts Display - Implementation Complete
+            </h1>
+            <p class="text-xl text-slate-600">
+                Admin can now add and view task counts on team member cards via Firebase
+            </p>
+            <div class="mt-4 inline-block px-6 py-3 bg-green-100 border-2 border-green-500 rounded-full">
+                <span class="text-green-700 font-bold text-lg">🎉 Ready to Use!</span>
+            </div>
+        </div>
+
+        <!-- Feature Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+            <div class="bg-white rounded-2xl shadow-2xl p-8 border-2 border-purple-200 fade-in">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="p-4 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                        </svg>
+                    </div>
+                    <h2 class="text-2xl font-bold text-slate-800">What's New</h2>
+                </div>
+                <ul class="space-y-4 text-slate-700">
+                    <li class="flex items-start gap-3">
+                        <span class="text-green-500 text-xl">✓</span>
+                        <span><strong>Task Counts Display:</strong> Each member card shows Done, Active, Pending, Blocked counts</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-green-500 text-xl">✓</span>
+                        <span><strong>Firebase Persistence:</strong> Admin-edited counts are saved and retrieved from Firebase</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-green-500 text-xl">✓</span>
+                        <span><strong>Real-time Updates:</strong> Changes reflect immediately on the page</span>
+                    </li>
+                    <li class="flex items-start gap-3">
+                        <span class="text-green-500 text-xl">✓</span>
+                        <span><strong>Progress Visualization:</strong> Overall progress bar showing completion percentage</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-2xl p-8 border-2 border-blue-200 fade-in" style="animation-delay: 0.1s;">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="p-4 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                    </div>
+                    <h2 class="text-2xl font-bold text-slate-800">How It Works</h2>
+                </div>
+                <div class="space-y-4">
+                    <div class="flex items-start gap-3">
+                        <div class="flex-shrink-0 w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 font-bold">1</div>
+                        <div>
+                            <p class="font-semibold text-slate-800">Navigate to Admin Page</p>
+                            <p class="text-sm text-slate-600">Go to <code class="bg-slate-100 px-2 py-1 rounded">http://localhost:3000/admin/team-workload</code></p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="flex-shrink-0 w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 font-bold">2</div>
+                        <div>
+                            <p class="font-semibold text-slate-800">View Member Cards</p>
+                            <p class="text-sm text-slate-600">See all team members with their task counts</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="flex-shrink-0 w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 font-bold">3</div>
+                        <div>
+                            <p class="font-semibold text-slate-800">Edit Task Counts</p>
+                            <p class="text-sm text-slate-600">Click edit button (✏️) to update counts</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start gap-3">
+                        <div class="flex-shrink-0 w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 font-bold">4</div>
+                        <div>
+                            <p class="font-semibold text-slate-800">Save to Firebase</p>
+                            <p class="text-sm text-slate-600">Changes persist across sessions</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mock Team Member Card Example -->
+        <div class="mb-12">
+            <h2 class="text-3xl font-bold text-center mb-8 text-slate-800">Team Member Card Example</h2>
+            <div class="max-w-md mx-auto">
+                <div class="bg-white rounded-2xl shadow-2xl border-2 border-slate-200 overflow-hidden pulse-animation">
+                    <!-- Card Header -->
+                    <div class="bg-gradient-to-r from-purple-50 to-pink-50 p-6">
+                        <div class="flex items-start justify-between mb-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                                    J
+                                </div>
+                                <div>
+                                    <h3 class="font-bold text-lg text-slate-800">John Doe</h3>
+                                    <p class="text-sm text-slate-500">john@example.com</p>
+                                    <span class="inline-block mt-1 px-2 py-1 text-xs bg-white border border-slate-300 rounded-full">Developer</span>
+                                </div>
+                            </div>
+                            <div class="flex gap-1">
+                                <button class="p-2 hover:bg-purple-100 rounded-lg transition">
+                                    <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                </button>
+                                <button class="p-2 hover:bg-blue-100 rounded-lg transition">
+                                    <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                </button>
+                                <button class="p-2 hover:bg-red-100 rounded-lg transition">
+                                    <svg class="w-4 h-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="inline-block px-3 py-1 bg-amber-100 border-2 border-amber-300 rounded-full">
+                            <span class="text-amber-700 text-sm font-bold">🔥 Moderate Workload (11 tasks)</span>
+                        </div>
+                    </div>
+
+                    <!-- Card Body -->
+                    <div class="p-6 space-y-4">
+                        <!-- Progress Bar -->
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm font-medium text-slate-700">Overall Progress</span>
+                                <span class="text-sm font-bold text-purple-600">45%</span>
+                            </div>
+                            <div class="w-full bg-slate-200 rounded-full h-2">
+                                <div class="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full" style="width: 45%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Task Counts Grid -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <!-- Done -->
+                            <div class="p-3 rounded-xl border-2 border-green-200 bg-gradient-to-br from-green-50 to-green-100">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span class="text-xs font-medium text-slate-600">Done</span>
+                                </div>
+                                <p class="text-2xl font-bold text-green-600">5</p>
+                            </div>
+
+                            <!-- Active -->
+                            <div class="p-3 rounded-xl border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-blue-100">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                    </svg>
+                                    <span class="text-xs font-medium text-slate-600">Active</span>
+                                </div>
+                                <p class="text-2xl font-bold text-blue-600">3</p>
+                            </div>
+
+                            <!-- Pending -->
+                            <div class="p-3 rounded-xl border-2 border-amber-200 bg-gradient-to-br from-amber-50 to-amber-100">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span class="text-xs font-medium text-slate-600">Pending</span>
+                                </div>
+                                <p class="text-2xl font-bold text-amber-600">2</p>
+                            </div>
+
+                            <!-- Blocked -->
+                            <div class="p-3 rounded-xl border-2 border-red-200 bg-gradient-to-br from-red-50 to-red-100">
+                                <div class="flex items-center gap-2 mb-1">
+                                    <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span class="text-xs font-medium text-slate-600">Blocked</span>
+                                </div>
+                                <p class="text-2xl font-bold text-red-600">1</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Technical Details -->
+        <div class="bg-white rounded-2xl shadow-2xl p-8 border-2 border-slate-200 mb-12">
+            <h2 class="text-3xl font-bold text-center mb-8 text-slate-800">Technical Implementation</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="p-6 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl border border-purple-200">
+                    <h3 class="font-bold text-lg text-purple-800 mb-3">📊 Data Source</h3>
+                    <p class="text-sm text-slate-700">Task counts are retrieved from Firebase teamMembers collection with admin-edited values taking priority over calculated counts.</p>
+                </div>
+                <div class="p-6 bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl border border-blue-200">
+                    <h3 class="font-bold text-lg text-blue-800 mb-3">💾 Persistence</h3>
+                    <p class="text-sm text-slate-700">All task count edits are saved to Firebase Firestore with automatic total calculation and workload synchronization.</p>
+                </div>
+                <div class="p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-xl border border-green-200">
+                    <h3 class="font-bold text-lg text-green-800 mb-3">🔄 Real-time</h3>
+                    <p class="text-sm text-slate-700">Context-based state management ensures immediate UI updates with cache invalidation on edits.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Start -->
+        <div class="bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 rounded-2xl shadow-2xl p-8 text-white">
+            <h2 class="text-3xl font-bold text-center mb-6">🚀 Quick Start Guide</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+                    <h3 class="font-bold text-xl mb-3">For Admins</h3>
+                    <ol class="space-y-2 text-sm">
+                        <li>1. Login at <code class="bg-black/20 px-2 py-1 rounded">/admin/login</code></li>
+                        <li>2. Navigate to Team Workload</li>
+                        <li>3. Click edit on any member card</li>
+                        <li>4. Update task counts and save</li>
+                        <li>5. View updated counts instantly</li>
+                    </ol>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+                    <h3 class="font-bold text-xl mb-3">Data Fields</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li>✅ <strong>Done:</strong> Completed tasks</li>
+                        <li>🔄 <strong>Active:</strong> In-progress tasks</li>
+                        <li>⏳ <strong>Pending:</strong> Waiting to start</li>
+                        <li>🚫 <strong>Blocked:</strong> Blocked tasks</li>
+                        <li>📊 <strong>Total:</strong> Auto-calculated</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-12 text-slate-600">
+            <p class="text-lg">Implementation completed on <strong>December 7, 2025</strong></p>
+            <p class="mt-2">Server running at: <a href="http://localhost:3000/admin/team-workload" class="text-purple-600 hover:underline font-bold">http://localhost:3000/admin/team-workload</a></p>
+        </div>
+    </div>
+</body>
+</html>

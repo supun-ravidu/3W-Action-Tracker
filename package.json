@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "seed:team": "tsx src/scripts/seedTeamMembers.ts",
-    "seed:projects": "tsx src/scripts/seedProjectRequests.ts"
+    "seed:projects": "tsx src/scripts/seedProjectRequests.ts",
+    "clear:firestore": "tsx clear-firestore-data.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

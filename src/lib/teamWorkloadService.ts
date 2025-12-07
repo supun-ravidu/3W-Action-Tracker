@@ -63,7 +63,7 @@ export const getTeamWorkload = async (): Promise<TeamMemberWorkload[]> => {
       } as ActionPlan;
     });
 
-    const teamData: TeamMember[] = teamSnapshot.docs.map((doc) => {
+    const teamData: (TeamMember & { storedTaskCounts?: any })[] = teamSnapshot.docs.map((doc) => {
       const data = doc.data();
       return {
         id: doc.id,
@@ -72,7 +72,8 @@ export const getTeamWorkload = async (): Promise<TeamMemberWorkload[]> => {
         avatar: data.avatar,
         role: data.role,
         department: data.department,
-      } as TeamMember;
+        storedTaskCounts: data.taskCounts, // Get admin-edited task counts from Firebase
+      } as TeamMember & { storedTaskCounts?: any };
     });
 
     return teamData.map((member) => {
@@ -80,10 +81,26 @@ export const getTeamWorkload = async (): Promise<TeamMemberWorkload[]> => {
         (action) => action.who?.primaryAssignee?.id === member.id
       );
 
-      const done = memberActions.filter((a) => a.status === 'completed').length;
-      const active = memberActions.filter((a) => a.status === 'in-progress').length;
-      const pending = memberActions.filter((a) => a.status === 'pending').length;
-      const blocked = memberActions.filter((a) => a.status === 'blocked').length;
+      // Calculate task counts from action plans (fallback)
+      const calculatedDone = memberActions.filter((a) => a.status === 'completed').length;
+      const calculatedActive = memberActions.filter((a) => a.status === 'in-progress').length;
+      const calculatedPending = memberActions.filter((a) => a.status === 'pending').length;
+      const calculatedBlocked = memberActions.filter((a) => a.status === 'blocked').length;
+
+      // Use stored task counts if available (admin-edited), otherwise use calculated counts
+      const taskCounts = member.storedTaskCounts ? {
+        done: member.storedTaskCounts.done || 0,
+        active: member.storedTaskCounts.active || 0,
+        pending: member.storedTaskCounts.pending || 0,
+        blocked: member.storedTaskCounts.blocked || 0,
+        total: member.storedTaskCounts.total || 0,
+      } : {
+        done: calculatedDone,
+        active: calculatedActive,
+        pending: calculatedPending,
+        blocked: calculatedBlocked,
+        total: calculatedDone + calculatedActive + calculatedPending + calculatedBlocked,
+      };
 
       const recentTasks = memberActions
         .sort((a, b) => {
@@ -106,13 +123,7 @@ export const getTeamWorkload = async (): Promise<TeamMemberWorkload[]> => {
         avatar: member.avatar,
         role: member.role,
         department: member.department,
-        taskCounts: {
-          done,
-          active,
-          pending,
-          blocked,
-          total: done + active + pending + blocked,
-        },
+        taskCounts,
         recentTasks,
       };
     });

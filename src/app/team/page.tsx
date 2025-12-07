@@ -16,6 +16,7 @@ import { NewMemberSpotlight } from '@/components/team/NewMemberSpotlight';
 import { NewMemberApprovedNotification } from '@/components/team/NewMemberApprovedNotification';
 import { WorkloadSyncManager } from '@/components/team/WorkloadSyncManager';
 import { RealtimeWorkloadDisplay } from '@/components/team/RealtimeWorkloadDisplay';
+import { AdvancedTeamWorkload } from '@/components/team/AdvancedTeamWorkload';
 import { Users, BarChart3, Award, Calendar, Bell } from 'lucide-react';
 
 export default function TeamPage() {
@@ -81,9 +82,7 @@ export default function TeamPage() {
         </TabsContent>
 
         <TabsContent value="workload" className="space-y-6">
-          {/* Temporarily disabled to reduce Firebase quota usage
-          <RealtimeWorkloadDisplay /> */}
-          <WorkloadDistribution />
+          <AdvancedTeamWorkload />
         </TabsContent>
 
         <TabsContent value="skills" className="space-y-6">

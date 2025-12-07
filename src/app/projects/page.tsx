@@ -8,7 +8,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import FloatingCreateButton from '@/components/projects/FloatingCreateButton';
 import CreateProjectModal from '@/components/projects/CreateProjectModal';
 import { CreativeNavBar } from '@/components/CreativeNavBar';
-import CreativeFooter from '@/components/CreativeFooter';
 import { AnimatedBusinessBackground } from '@/components/AnimatedBusinessBackground';
 import { 
   Sparkles, 
@@ -232,8 +231,6 @@ export default function ProjectsPage() {
           onOpenChange={setIsCreateModalOpen} 
         />
       </div>
-
-      <CreativeFooter />
     </>
   );
 }

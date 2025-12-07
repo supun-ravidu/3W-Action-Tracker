@@ -238,51 +238,6 @@ export const deleteProjectRequest = async (
 };
 
 /**
- * Get pending project requests (non-realtime fetch)
- */
-export const getPendingProjectRequests = async (): Promise<{ success: boolean; data?: ProjectRequest[]; error?: string }> => {
-  try {
-    const { getDocs } = await import('firebase/firestore');
-    // Remove orderBy to avoid composite index requirement - sort client-side instead
-    const q = query(
-      collection(db, COLLECTION_NAME),
-      where('status', '==', 'pending')
-    );
-    const snapshot = await getDocs(q);
-    
-    const requests: ProjectRequest[] = snapshot.docs.map((doc) => {
-      const data = doc.data();
-      return {
-        id: doc.id,
-        name: data.name,
-        description: data.description,
-        icon: data.icon,
-        color: data.color,
-        workspace: data.workspace,
-        startDate: data.startDate?.toDate() || new Date(),
-        targetEndDate: data.targetEndDate?.toDate() || new Date(),
-        budget: data.budget,
-        tags: data.tags || [],
-        status: data.status,
-        requestedBy: data.requestedBy,
-        requestedAt: data.requestedAt?.toDate() || new Date(),
-        reviewedBy: data.reviewedBy,
-        reviewedAt: data.reviewedAt?.toDate(),
-        rejectionReason: data.rejectionReason,
-      };
-    });
-    
-    // Sort client-side by requestedAt descending
-    requests.sort((a, b) => b.requestedAt.getTime() - a.requestedAt.getTime());
-    
-    return { success: true, data: requests };
-  } catch (error) {
-    console.error('❌ Error getting pending requests:', error);
-    return { success: false, error: (error as Error).message };
-  }
-};
-
-/**
  * Get count of pending project requests
  */
 export const getPendingProjectRequestsCount = async (): Promise<number> => {

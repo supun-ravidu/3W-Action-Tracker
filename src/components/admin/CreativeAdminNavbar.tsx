@@ -32,6 +32,12 @@ import {
   Shield,
   Activity,
   Rocket,
+  Crown,
+  TrendingUp,
+  Star,
+  Globe,
+  Command,
+  Layers,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PendingRequestsBadge } from './PendingRequestsBadge';
@@ -117,115 +123,194 @@ export function CreativeAdminNavbar({ user }: CreativeAdminNavbarProps) {
       <motion.header
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        className={`sticky top-0 z-50 transition-all duration-300 ${
+        className={`sticky top-0 z-50 transition-all duration-500 ${
           scrolled
-            ? 'bg-white/95 backdrop-blur-xl shadow-lg border-b border-purple-100'
-            : 'bg-white/80 backdrop-blur-md shadow-sm border-b border-gray-200'
+            ? 'bg-gradient-to-r from-purple-900/95 via-indigo-900/95 to-blue-900/95 backdrop-blur-2xl shadow-2xl border-b border-purple-500/30'
+            : 'bg-gradient-to-r from-purple-900/90 via-indigo-900/90 to-blue-900/90 backdrop-blur-xl shadow-xl border-b border-purple-500/20'
         }`}
       >
+        {/* Animated background particles */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {[...Array(20)].map((_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-1 h-1 bg-white/20 rounded-full"
+              style={{
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+              }}
+              animate={{
+                y: [0, -30, 0],
+                opacity: [0, 1, 0],
+              }}
+              transition={{
+                duration: 3 + Math.random() * 2,
+                repeat: Infinity,
+                delay: Math.random() * 2,
+              }}
+            />
+          ))}
+        </div>
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 lg:h-20">
+          <div className="flex items-center justify-between h-18 lg:h-22">
             {/* Logo & Brand */}
             <motion.div
-              className="flex items-center gap-4 cursor-pointer"
-              whileHover={{ scale: 1.02 }}
+              className="flex items-center gap-4 cursor-pointer relative z-10"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.98 }}
               onClick={() => router.push('/admin/dashboard')}
             >
               <div className="relative">
                 <motion.div
-                  className="h-12 w-12 rounded-2xl bg-gradient-to-br from-purple-500 via-pink-500 to-rose-500 flex items-center justify-center shadow-lg"
+                  className="h-14 w-14 rounded-2xl bg-gradient-to-br from-yellow-400 via-orange-500 to-red-500 flex items-center justify-center shadow-2xl"
                   animate={{
                     boxShadow: [
-                      '0 0 20px rgba(168, 85, 247, 0.4)',
-                      '0 0 40px rgba(236, 72, 153, 0.6)',
-                      '0 0 20px rgba(168, 85, 247, 0.4)',
+                      '0 0 30px rgba(251, 191, 36, 0.6)',
+                      '0 0 60px rgba(249, 115, 22, 0.8)',
+                      '0 0 30px rgba(251, 191, 36, 0.6)',
                     ],
+                    rotate: [0, 5, 0, -5, 0],
                   }}
-                  transition={{ duration: 2, repeat: Infinity }}
+                  transition={{ duration: 4, repeat: Infinity }}
                 >
-                  <Shield className="h-7 w-7 text-white" />
+                  <Crown className="h-8 w-8 text-white drop-shadow-lg" />
                 </motion.div>
                 <motion.div
-                  className="absolute -top-1 -right-1 h-4 w-4 bg-green-500 rounded-full border-2 border-white"
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 2, repeat: Infinity }}
-                />
+                  className="absolute -top-1 -right-1 h-5 w-5 bg-green-400 rounded-full border-2 border-white shadow-lg"
+                  animate={{ scale: [1, 1.3, 1], rotate: [0, 180, 360] }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                >
+                  <Zap className="h-3 w-3 text-white" />
+                </motion.div>
+                <motion.div
+                  className="absolute -bottom-1 -left-1"
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                >
+                  <Sparkles className="h-4 w-4 text-yellow-300" />
+                </motion.div>
               </div>
               <div className="hidden lg:block">
-                <h1 className="text-xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 bg-clip-text text-transparent">
-                  Admin Control Center
-                </h1>
-                <p className="text-xs text-gray-500 font-medium">
-                  Powered by <span className="text-purple-600">Advanced Analytics</span>
-                </p>
+                <div className="flex items-center gap-2 mb-1">
+                  <h1 className="text-2xl font-black text-white drop-shadow-lg">
+                    ADMIN COMMAND CENTER
+                  </h1>
+                  <Star className="h-5 w-5 text-yellow-300 animate-pulse" />
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse" />
+                  <p className="text-xs text-purple-200 font-bold uppercase tracking-wider">
+                    <Layers className="inline h-3 w-3 mr-1" />
+                    Next-Gen Analytics Dashboard
+                  </p>
+                </div>
               </div>
             </motion.div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center gap-2">
-              {navItems.map((item) => {
+            <nav className="hidden lg:flex items-center gap-3 relative z-10">
+              {navItems.map((item, index) => {
                 const Icon = item.icon;
                 const active = isActive(item.href);
                 return (
-                  <motion.div key={item.name} className="relative" whileHover={{ y: -2 }}>
-                    <Button
-                      variant={active ? 'default' : 'ghost'}
-                      onClick={() => router.push(item.href)}
-                      className={`gap-2 relative overflow-hidden ${
-                        active
-                          ? `bg-gradient-to-r ${item.color} text-white hover:opacity-90 shadow-lg`
-                          : 'hover:bg-purple-50'
-                      }`}
+                  <motion.div 
+                    key={item.name} 
+                    className="relative" 
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                  >
+                    <motion.div
+                      whileHover={{ y: -3, scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
                     >
-                      <Icon className="h-4 w-4" />
-                      <span className="font-medium">{item.name}</span>
-                      {item.badge && <div className="ml-1">{item.badge}</div>}
-                      {active && (
-                        <motion.div
-                          layoutId="activeTab"
-                          className="absolute inset-0 -z-10"
-                          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                        />
-                      )}
-                    </Button>
+                      <Button
+                        variant={active ? 'default' : 'ghost'}
+                        onClick={() => router.push(item.href)}
+                        className={`gap-2 relative overflow-hidden font-bold transition-all duration-300 ${
+                          active
+                            ? `bg-gradient-to-r ${item.color} text-white hover:opacity-90 shadow-2xl border-2 border-white/30`
+                            : 'text-white hover:bg-white/20 hover:text-white border-2 border-transparent hover:border-white/20'
+                        }`}
+                      >
+                        {active && (
+                          <motion.div
+                            className="absolute inset-0 bg-white/20"
+                            animate={{
+                              scale: [1, 1.2, 1],
+                              opacity: [0.3, 0, 0.3],
+                            }}
+                            transition={{ duration: 2, repeat: Infinity }}
+                          />
+                        )}
+                        <Icon className={`h-5 w-5 ${active ? 'drop-shadow-lg' : ''}`} />
+                        <span className={active ? 'drop-shadow-sm' : ''}>{item.name}</span>
+                        {item.badge && <div className="ml-1">{item.badge}</div>}
+                      </Button>
+                    </motion.div>
+                    {active && (
+                      <motion.div
+                        layoutId="activeIndicator"
+                        className="absolute -bottom-1 left-0 right-0 h-1 bg-white rounded-full shadow-lg"
+                        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                      />
+                    )}
                   </motion.div>
                 );
               })}
             </nav>
 
             {/* Right Side Actions */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 relative z-10">
               {/* Time Display */}
-              <div className="hidden xl:flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
-                <Activity className="h-4 w-4 text-purple-600 animate-pulse" />
-                <span className="text-sm font-semibold text-purple-700">{currentTime}</span>
-              </div>
+              <motion.div 
+                className="hidden xl:flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-xl border border-white/20 shadow-lg"
+                whileHover={{ scale: 1.05, backgroundColor: 'rgba(255, 255, 255, 0.15)' }}
+              >
+                <Activity className="h-4 w-4 text-yellow-300 animate-pulse" />
+                <span className="text-sm font-bold text-white tracking-wide">{currentTime}</span>
+              </motion.div>
 
               {/* Quick Search */}
-              <Button
-                variant="outline"
-                size="icon"
-                className="hidden md:flex relative group hover:border-purple-300"
-              >
-                <Search className="h-4 w-4 text-gray-600 group-hover:text-purple-600 transition-colors" />
-              </Button>
+              <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="hidden md:flex relative group bg-white/10 hover:bg-white/20 border-white/30 hover:border-white/50 backdrop-blur-md"
+                >
+                  <Search className="h-5 w-5 text-white group-hover:text-yellow-300 transition-colors" />
+                  <motion.div
+                    className="absolute inset-0 bg-white/20 rounded-md"
+                    initial={{ scale: 0 }}
+                    whileHover={{ scale: 1 }}
+                    transition={{ duration: 0.2 }}
+                  />
+                </Button>
+              </motion.div>
 
               {/* Notifications */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="relative hover:border-purple-300"
-                  >
-                    <Bell className="h-4 w-4 text-gray-600" />
-                    <span className="absolute -top-1 -right-1 h-4 w-4 bg-red-500 rounded-full text-[10px] text-white flex items-center justify-center animate-pulse">
-                      3
-                    </span>
-                  </Button>
+                  <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="relative bg-white/10 hover:bg-white/20 border-white/30 hover:border-white/50 backdrop-blur-md"
+                    >
+                      <Bell className="h-5 w-5 text-white" />
+                      <motion.span 
+                        className="absolute -top-1 -right-1 h-5 w-5 bg-gradient-to-br from-red-500 to-pink-500 rounded-full text-[10px] text-white font-bold flex items-center justify-center shadow-lg"
+                        animate={{ scale: [1, 1.2, 1] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                      >
+                        3
+                      </motion.span>
+                    </Button>
+                  </motion.div>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-80">
-                  <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+                <DropdownMenuContent align="end" className="w-80 bg-white/95 backdrop-blur-xl">
+                  <DropdownMenuLabel className="text-purple-900">Notifications</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <div className="p-4 text-sm text-gray-500 text-center">
                     No new notifications
@@ -236,23 +321,32 @@ export function CreativeAdminNavbar({ user }: CreativeAdminNavbarProps) {
               {/* User Menu */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="hidden md:flex gap-2 hover:border-purple-300 bg-gradient-to-r from-purple-50 to-pink-50"
-                  >
-                    <div className="h-8 w-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold text-sm">
-                      {user.email?.charAt(0).toUpperCase()}
-                    </div>
-                    <div className="text-left">
-                      <p className="text-sm font-semibold text-gray-900">Admin</p>
-                      <p className="text-xs text-gray-500 truncate max-w-[100px]">
-                        {user.email}
-                      </p>
-                    </div>
-                    <ChevronDown className="h-4 w-4 text-gray-500" />
-                  </Button>
+                  <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                    <Button
+                      variant="outline"
+                      className="hidden md:flex gap-2 bg-white/10 hover:bg-white/20 border-white/30 hover:border-white/50 backdrop-blur-md"
+                    >
+                      <motion.div 
+                        className="h-9 w-9 rounded-full bg-gradient-to-br from-yellow-400 via-orange-500 to-red-500 flex items-center justify-center text-white font-black text-sm shadow-lg"
+                        whileHover={{ rotate: 360 }}
+                        transition={{ duration: 0.6 }}
+                      >
+                        {user.email?.charAt(0).toUpperCase()}
+                      </motion.div>
+                      <div className="text-left">
+                        <p className="text-sm font-bold text-white flex items-center gap-1">
+                          Admin
+                          <Crown className="h-3 w-3 text-yellow-300" />
+                        </p>
+                        <p className="text-xs text-purple-200 truncate max-w-[100px]">
+                          {user.email}
+                        </p>
+                      </div>
+                      <ChevronDown className="h-4 w-4 text-white" />
+                    </Button>
+                  </motion.div>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuContent align="end" className="w-56 bg-white/95 backdrop-blur-xl">
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => router.push('/admin/settings')}>
@@ -275,45 +369,70 @@ export function CreativeAdminNavbar({ user }: CreativeAdminNavbarProps) {
               </DropdownMenu>
 
               {/* Mobile Menu Button */}
-              <Button
-                variant="outline"
-                size="icon"
-                className="lg:hidden"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              >
-                {mobileMenuOpen ? (
-                  <X className="h-5 w-5" />
-                ) : (
-                  <Menu className="h-5 w-5" />
-                )}
-              </Button>
+              <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="lg:hidden bg-white/10 hover:bg-white/20 border-white/30 text-white"
+                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                >
+                  {mobileMenuOpen ? (
+                    <X className="h-5 w-5" />
+                  ) : (
+                    <Menu className="h-5 w-5" />
+                  )}
+                </Button>
+              </motion.div>
             </div>
           </div>
         </div>
 
-        {/* Status Bar */}
+        {/* Enhanced Status Bar */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="border-t border-purple-100 bg-gradient-to-r from-purple-50 via-pink-50 to-rose-50"
+          className="border-t border-white/20 bg-gradient-to-r from-purple-800/80 via-indigo-800/80 to-blue-800/80 backdrop-blur-xl relative overflow-hidden"
         >
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+          {/* Animated gradient overlay */}
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"
+            animate={{ x: ['-100%', '200%'] }}
+            transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+          />
+          
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 relative z-10">
             <div className="flex items-center justify-between text-xs">
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-1.5">
-                  <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-                  <span className="text-gray-600 font-medium">All Systems Operational</span>
+              <div className="flex items-center gap-6">
+                <motion.div 
+                  className="flex items-center gap-2"
+                  animate={{ opacity: [0.7, 1, 0.7] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  <div className="relative">
+                    <div className="h-2.5 w-2.5 rounded-full bg-green-400 animate-pulse" />
+                    <div className="absolute inset-0 h-2.5 w-2.5 rounded-full bg-green-400 animate-ping" />
+                  </div>
+                  <span className="text-white font-bold uppercase tracking-wider">All Systems Operational</span>
+                </motion.div>
+                <div className="hidden md:flex items-center gap-2">
+                  <Rocket className="h-4 w-4 text-yellow-300" />
+                  <span className="text-purple-200 font-semibold">Firebase Connected</span>
                 </div>
-                <div className="hidden md:flex items-center gap-1.5">
-                  <Rocket className="h-3 w-3 text-purple-600" />
-                  <span className="text-gray-600">Firebase Connected</span>
+                <div className="hidden lg:flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4 text-green-300" />
+                  <span className="text-purple-200 font-semibold">Performance: Excellent</span>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
-                <Badge variant="secondary" className="text-xs gap-1">
-                  <Sparkles className="h-3 w-3" />
-                  v2.0.0
-                </Badge>
+              <div className="flex items-center gap-3">
+                <motion.div
+                  whileHover={{ scale: 1.1 }}
+                >
+                  <Badge variant="secondary" className="text-xs gap-1.5 bg-gradient-to-r from-yellow-400 to-orange-500 text-white border-none font-bold shadow-lg">
+                    <Sparkles className="h-3 w-3" />
+                    v3.0.0 PRO
+                  </Badge>
+                </motion.div>
+                <Globe className="h-4 w-4 text-blue-300 hidden sm:block" />
               </div>
             </div>
           </div>

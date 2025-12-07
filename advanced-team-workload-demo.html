@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Team Workload - Visual Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(168, 85, 247, 0.4); }
+            50% { box-shadow: 0 0 40px rgba(236, 72, 153, 0.6); }
+        }
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .gradient-animate {
+            background-size: 200% 200%;
+            animation: gradient-shift 3s ease infinite;
+        }
+        .float-animation {
+            animation: float 3s ease-in-out infinite;
+        }
+        .pulse-glow {
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+        .rotate-slow {
+            animation: rotate 20s linear infinite;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-900 via-purple-900 to-pink-900 min-h-screen">
+    <!-- Decorative Elements -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute top-20 left-20 w-72 h-72 bg-purple-500/20 rounded-full blur-3xl rotate-slow"></div>
+        <div class="absolute bottom-20 right-20 w-96 h-96 bg-pink-500/20 rounded-full blur-3xl" style="animation: rotate 25s linear infinite reverse;"></div>
+        <div class="absolute top-1/2 left-1/2 w-64 h-64 bg-rose-500/20 rounded-full blur-3xl rotate-slow"></div>
+    </div>
+
+    <div class="relative z-10 max-w-7xl mx-auto px-8 py-12">
+        <!-- Hero Section -->
+        <div class="text-center mb-16 float-animation">
+            <div class="inline-block mb-6">
+                <div class="relative">
+                    <div class="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 rounded-3xl blur-2xl opacity-50 animate-pulse"></div>
+                    <div class="relative bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 text-white px-8 py-4 rounded-3xl font-bold text-xl">
+                        🎨 ADVANCED TEAM WORKLOAD
+                    </div>
+                </div>
+            </div>
+            <h1 class="text-7xl font-black mb-6 bg-gradient-to-r from-purple-200 via-pink-200 to-rose-200 bg-clip-text text-transparent">
+                Creative & Advanced
+            </h1>
+            <p class="text-2xl text-purple-200 mb-4">
+                Three View Modes • Live Animations • Real-time Firebase
+            </p>
+            <div class="flex items-center justify-center gap-4 mt-8">
+                <a href="http://localhost:3000/team" target="_blank" class="group relative">
+                    <div class="absolute inset-0 bg-gradient-to-r from-green-500 to-emerald-500 rounded-2xl blur-lg opacity-75 group-hover:opacity-100 transition"></div>
+                    <div class="relative bg-gradient-to-r from-green-500 to-emerald-500 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:scale-105 transition">
+                        🚀 View Live Demo
+                    </div>
+                </a>
+                <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl px-6 py-4">
+                    <span class="text-white font-semibold">Status: </span>
+                    <span class="text-green-400 font-bold">✓ LIVE</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Feature Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+            <!-- View Modes -->
+            <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-8 hover:bg-white/15 transition pulse-glow">
+                <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-4">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1H5a1 1 0 01-1-1v-3zM14 16a1 1 0 011-1h4a1 1 0 011 1v3a1 1 0 01-1 1h-4a1 1 0 01-1-1v-3z" />
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-3">3 View Modes</h3>
+                <p class="text-purple-200">Grid, List, and Compact views with smooth transitions</p>
+                <ul class="mt-4 space-y-2 text-sm text-purple-100">
+                    <li>• 🎯 Grid - Detailed cards</li>
+                    <li>• 📋 List - Horizontal layout</li>
+                    <li>• 🔢 Compact - Minimal view</li>
+                </ul>
+            </div>
+
+            <!-- Live Data -->
+            <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-8 hover:bg-white/15 transition pulse-glow" style="animation-delay: 0.2s;">
+                <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mb-4">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-3">Real-time Data</h3>
+                <p class="text-purple-200">Live Firebase sync with admin-edited task counts</p>
+                <ul class="mt-4 space-y-2 text-sm text-purple-100">
+                    <li>• 📡 Live connection status</li>
+                    <li>• 🔄 Auto-refresh data</li>
+                    <li>• ✅ Persistent counts</li>
+                </ul>
+            </div>
+
+            <!-- Animations -->
+            <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-8 hover:bg-white/15 transition pulse-glow" style="animation-delay: 0.4s;">
+                <div class="w-16 h-16 bg-gradient-to-br from-rose-500 to-pink-500 rounded-2xl flex items-center justify-center mb-4">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                    </svg>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-3">Premium Animations</h3>
+                <p class="text-purple-200">Smooth, 60fps animations with Framer Motion</p>
+                <ul class="mt-4 space-y-2 text-sm text-purple-100">
+                    <li>• ✨ Staggered loading</li>
+                    <li>• 🎭 Hover effects</li>
+                    <li>• 🌊 Fluid transitions</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- View Mode Comparison -->
+        <div class="mb-16">
+            <h2 class="text-4xl font-bold text-center mb-12 text-white">View Mode Showcase</h2>
+            <div class="space-y-8">
+                <!-- Grid View -->
+                <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-8">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v7a1 1 0 01-1 1H5a1 1 0 01-1-1V5z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-white">Grid View</h3>
+                            <p class="text-purple-200">Beautiful card layout with detailed breakdowns</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-2xl p-6 border border-purple-400/30">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold">J</div>
+                                <div class="flex-1">
+                                    <p class="text-white font-bold text-sm">John Doe</p>
+                                    <p class="text-purple-200 text-xs">john@example.com</p>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="bg-green-500/20 border border-green-400/30 rounded-lg p-2">
+                                    <p class="text-green-200 text-xs mb-1">Done</p>
+                                    <p class="text-green-100 font-bold text-xl">5</p>
+                                </div>
+                                <div class="bg-blue-500/20 border border-blue-400/30 rounded-lg p-2">
+                                    <p class="text-blue-200 text-xs mb-1">Active</p>
+                                    <p class="text-blue-100 font-bold text-xl">3</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-2xl p-6 border border-blue-400/30">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center text-white font-bold">S</div>
+                                <div class="flex-1">
+                                    <p class="text-white font-bold text-sm">Sarah Smith</p>
+                                    <p class="text-blue-200 text-xs">sarah@example.com</p>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="bg-green-500/20 border border-green-400/30 rounded-lg p-2">
+                                    <p class="text-green-200 text-xs mb-1">Done</p>
+                                    <p class="text-green-100 font-bold text-xl">8</p>
+                                </div>
+                                <div class="bg-blue-500/20 border border-blue-400/30 rounded-lg p-2">
+                                    <p class="text-blue-200 text-xs mb-1">Active</p>
+                                    <p class="text-blue-100 font-bold text-xl">4</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gradient-to-br from-rose-500/20 to-pink-500/20 rounded-2xl p-6 border border-rose-400/30">
+                            <div class="flex items-center gap-3 mb-4">
+                                <div class="w-10 h-10 bg-gradient-to-br from-rose-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold">M</div>
+                                <div class="flex-1">
+                                    <p class="text-white font-bold text-sm">Mike Wilson</p>
+                                    <p class="text-rose-200 text-xs">mike@example.com</p>
+                                </div>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="bg-green-500/20 border border-green-400/30 rounded-lg p-2">
+                                    <p class="text-green-200 text-xs mb-1">Done</p>
+                                    <p class="text-green-100 font-bold text-xl">12</p>
+                                </div>
+                                <div class="bg-blue-500/20 border border-blue-400/30 rounded-lg p-2">
+                                    <p class="text-blue-200 text-xs mb-1">Active</p>
+                                    <p class="text-blue-100 font-bold text-xl">6</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- List View -->
+                <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-8">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-white">List View</h3>
+                            <p class="text-purple-200">Horizontal layout with all stats visible</p>
+                        </div>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-2xl p-4 border border-purple-400/30 flex items-center gap-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold">J</div>
+                            <div class="flex-1 grid grid-cols-5 gap-4 text-center">
+                                <div>
+                                    <p class="text-2xl font-bold text-white">11</p>
+                                    <p class="text-xs text-purple-200">Total</p>
+                                </div>
+                                <div>
+                                    <p class="text-2xl font-bold text-green-400">5</p>
+                                    <p class="text-xs text-purple-200">Done</p>
+                                </div>
+                                <div>
+                                    <p class="text-2xl font-bold text-blue-400">3</p>
+                                    <p class="text-xs text-purple-200">Active</p>
+                                </div>
+                                <div>
+                                    <p class="text-2xl font-bold text-amber-400">2</p>
+                                    <p class="text-xs text-purple-200">Pending</p>
+                                </div>
+                                <div>
+                                    <p class="text-2xl font-bold text-red-400">1</p>
+                                    <p class="text-xs text-purple-200">Blocked</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-2xl p-4 border border-blue-400/30 flex items-center gap-4">
+                            <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center text-white font-bold">S</div>
+                            <div class="flex-1 grid grid-cols-5 gap-4 text-center">
+                                <div>
+                                    <p class="text-2xl font-bold text-white">15</p>
+                                    <p class="text-xs text-blue-200">Total</p>
+                                </div>
+                                <div>
+                                    <p class="text-2xl font-bold text-green-400">8</p>
+                                    <p class="text-xs text-blue-200">Done</p>
+                                </div>
+                                <div>
+                                    <p class="text-2xl font-bold text-blue-400">4</p>
+                                    <p class="text-xs text-blue-200">Active</p>
+                                </div>
+                                <div>
+                                    <p class="text-2xl font-bold text-amber-400">3</p>
+                                    <p class="text-xs text-blue-200">Pending</p>
+                                </div>
+                                <div>
+                                    <p class="text-2xl font-bold text-red-400">0</p>
+                                    <p class="text-xs text-blue-200">Blocked</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Compact View -->
+                <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-8">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-12 h-12 bg-gradient-to-br from-rose-500 to-pink-500 rounded-xl flex items-center justify-center">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-white">Compact View</h3>
+                            <p class="text-purple-200">Ultra-compact for quick scanning</p>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-xl p-3 border border-purple-400/30 flex items-center gap-3">
+                            <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-sm">J</div>
+                            <p class="text-white font-semibold flex-1">John Doe</p>
+                            <div class="flex items-center gap-2">
+                                <span class="bg-white/20 px-2 py-1 rounded text-xs text-white">11</span>
+                                <span class="bg-green-500/30 px-2 py-1 rounded text-xs text-green-200">✓ 5</span>
+                                <span class="bg-blue-500/30 px-2 py-1 rounded text-xs text-blue-200">⚡ 3</span>
+                            </div>
+                        </div>
+                        <div class="bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-xl p-3 border border-blue-400/30 flex items-center gap-3">
+                            <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center text-white font-bold text-sm">S</div>
+                            <p class="text-white font-semibold flex-1">Sarah Smith</p>
+                            <div class="flex items-center gap-2">
+                                <span class="bg-white/20 px-2 py-1 rounded text-xs text-white">15</span>
+                                <span class="bg-green-500/30 px-2 py-1 rounded text-xs text-green-200">✓ 8</span>
+                                <span class="bg-blue-500/30 px-2 py-1 rounded text-xs text-blue-200">⚡ 4</span>
+                            </div>
+                        </div>
+                        <div class="bg-gradient-to-r from-rose-500/20 to-pink-500/20 rounded-xl p-3 border border-rose-400/30 flex items-center gap-3">
+                            <div class="w-10 h-10 bg-gradient-to-br from-rose-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold text-sm">M</div>
+                            <p class="text-white font-semibold flex-1">Mike Wilson</p>
+                            <div class="flex items-center gap-2">
+                                <span class="bg-white/20 px-2 py-1 rounded text-xs text-white">22</span>
+                                <span class="bg-green-500/30 px-2 py-1 rounded text-xs text-green-200">✓ 12</span>
+                                <span class="bg-blue-500/30 px-2 py-1 rounded text-xs text-blue-200">⚡ 6</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features List -->
+        <div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-3xl p-12">
+            <h2 class="text-4xl font-bold text-center mb-12 text-white">✨ Complete Feature Set</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="flex items-start gap-4">
+                    <div class="flex-shrink-0 w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center text-white font-bold">✓</div>
+                    <div>
+                        <h4 class="text-white font-bold mb-1">Real-time Firebase Sync</h4>
+                        <p class="text-purple-200 text-sm">Live connection with admin-edited task counts</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="flex-shrink-0 w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center text-white font-bold">✓</div>
+                    <div>
+                        <h4 class="text-white font-bold mb-1">Three View Modes</h4>
+                        <p class="text-purple-200 text-sm">Grid, List, and Compact with smooth transitions</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="flex-shrink-0 w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center text-white font-bold">✓</div>
+                    <div>
+                        <h4 class="text-white font-bold mb-1">Advanced Filtering</h4>
+                        <p class="text-purple-200 text-sm">Filter by workload level (Light/Moderate/Heavy/Overload)</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="flex-shrink-0 w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center text-white font-bold">✓</div>
+                    <div>
+                        <h4 class="text-white font-bold mb-1">Smart Sorting</h4>
+                        <p class="text-purple-200 text-sm">Sort by name, workload, or completion rate</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="flex-shrink-0 w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center text-white font-bold">✓</div>
+                    <div>
+                        <h4 class="text-white font-bold mb-1">Premium Animations</h4>
+                        <p class="text-purple-200 text-sm">Smooth 60fps animations with Framer Motion</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="flex-shrink-0 w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center text-white font-bold">✓</div>
+                    <div>
+                        <h4 class="text-white font-bold mb-1">Live Statistics</h4>
+                        <p class="text-purple-200 text-sm">Connection status, team size, completion rate</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="flex-shrink-0 w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center text-white font-bold">✓</div>
+                    <div>
+                        <h4 class="text-white font-bold mb-1">Workload Assessment</h4>
+                        <p class="text-purple-200 text-sm">Auto-categorization with color-coded badges</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="flex-shrink-0 w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center text-white font-bold">✓</div>
+                    <div>
+                        <h4 class="text-white font-bold mb-1">High Performer Badges</h4>
+                        <p class="text-purple-200 text-sm">Automatic recognition for 70%+ completion</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="flex-shrink-0 w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center text-white font-bold">✓</div>
+                    <div>
+                        <h4 class="text-white font-bold mb-1">Responsive Design</h4>
+                        <p class="text-purple-200 text-sm">Perfect on desktop, tablet, and mobile</p>
+                    </div>
+                </div>
+                <div class="flex items-start gap-4">
+                    <div class="flex-shrink-0 w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center text-white font-bold">✓</div>
+                    <div>
+                        <h4 class="text-white font-bold mb-1">Details Toggle</h4>
+                        <p class="text-purple-200 text-sm">Show/hide task breakdowns for focused view</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA Section -->
+        <div class="mt-16 text-center">
+            <div class="bg-gradient-to-r from-purple-500/20 via-pink-500/20 to-rose-500/20 backdrop-blur-xl border border-white/20 rounded-3xl p-12">
+                <h2 class="text-5xl font-black text-white mb-4">Ready to Experience It?</h2>
+                <p class="text-xl text-purple-200 mb-8">Visit the team page and explore all three view modes</p>
+                <div class="flex items-center justify-center gap-4">
+                    <a href="http://localhost:3000/team" target="_blank" class="group relative">
+                        <div class="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 rounded-2xl blur-xl opacity-75 group-hover:opacity-100 transition"></div>
+                        <div class="relative bg-gradient-to-r from-purple-600 via-pink-600 to-rose-600 text-white px-12 py-5 rounded-2xl font-bold text-xl hover:scale-105 transition">
+                            🚀 Open Team Page
+                        </div>
+                    </a>
+                    <a href="http://localhost:3000/admin/team-workload" target="_blank" class="bg-white/10 backdrop-blur-sm border border-white/20 text-white px-8 py-5 rounded-2xl font-bold hover:bg-white/20 transition">
+                        🔧 Admin View
+                    </a>
+                </div>
+                <p class="text-purple-300 mt-6 text-sm">Server running on localhost:3000</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-12 text-center text-purple-300 text-sm">
+            <p>Implementation completed on <strong>December 7, 2025</strong></p>
+            <p class="mt-2">🎨 Creative • 🚀 Advanced • ✨ Beautiful</p>
+        </div>
+    </div>
+</body>
+</html>
