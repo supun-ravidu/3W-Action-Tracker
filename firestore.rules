@@ -1,0 +1,63 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Action Plans Collection
+    match /actionPlans/{actionPlanId} {
+      // Allow read access to all authenticated users
+      allow read: if request.auth != null;
+      
+      // Allow write access to all authenticated users
+      allow create, update, delete: if request.auth != null;
+    }
+    
+    // Team Members Collection
+    match /teamMembers/{memberId} {
+      // Allow read access to all authenticated users
+      allow read: if request.auth != null;
+      
+      // Allow write access to all authenticated users (or restrict to admins)
+      allow create, update, delete: if request.auth != null;
+    }
+    
+    // Team Member Requests Collection
+    match /teamMemberRequests/{requestId} {
+      // Anyone can create a request
+      allow create: if true;
+      
+      // Anyone can read requests
+      allow read: if true;
+      
+      // Only admins can update/delete requests
+      allow update, delete: if request.auth != null && request.auth.token.email == 'admin@gmail.com';
+    }
+    
+    // Project Requests Collection
+    match /projectRequests/{requestId} {
+      // Anyone can create a project request
+      allow create: if true;
+      
+      // Anyone can read requests (or restrict to authenticated users)
+      allow read: if true;
+      
+      // Only admins can approve/reject/delete requests
+      allow update, delete: if request.auth != null && request.auth.token.email == 'admin@gmail.com';
+    }
+    
+    // Projects Collection
+    match /projects/{projectId} {
+      allow read: if request.auth != null;
+      
+      // Only admins can create projects directly
+      allow create: if request.auth != null && request.auth.token.email == 'admin@gmail.com';
+      
+      // Authenticated users can update/delete
+      allow update, delete: if request.auth != null;
+    }
+    
+    // For development/testing, you can use these rules (NOT FOR PRODUCTION):
+    // match /{document=**} {
+    //   allow read, write: if true;
+    // }
+  }
+}

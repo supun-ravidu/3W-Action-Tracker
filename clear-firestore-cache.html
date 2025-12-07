@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clear Firestore Cache</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin: 10px 5px;
+        }
+        button:hover {
+            transform: scale(1.05);
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+        .success {
+            background: #10b981;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+        .info {
+            background: #f3f4f6;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #667eea;
+        }
+        .warning {
+            background: #fef3c7;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border-left: 4px solid #f59e0b;
+        }
+        code {
+            background: #f3f4f6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        ul {
+            line-height: 1.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧹 Clear Firestore Cache</h1>
+        
+        <div class="warning">
+            <strong>⚠️ Important:</strong> This will clear all Firestore cached data from your browser's IndexedDB. This is necessary to stop the quota errors from persistent retry attempts.
+        </div>
+
+        <div class="info">
+            <h3>What this does:</h3>
+            <ul>
+                <li>Clears all IndexedDB databases for this origin</li>
+                <li>Removes Firestore's persistent cache and retry queues</li>
+                <li>Stops the "Quota exceeded" errors from old subscriptions</li>
+                <li>Forces a fresh start with the new polling-based code</li>
+            </ul>
+        </div>
+
+        <button onclick="clearAllCache()">🗑️ Clear All Cache</button>
+        <button onclick="clearIndexedDB()">💾 Clear IndexedDB Only</button>
+        <button onclick="clearServiceWorkers()">⚙️ Clear Service Workers</button>
+        <button onclick="clearEverything()">🔥 Nuclear Option (Clear Everything)</button>
+
+        <div id="result" class="success"></div>
+
+        <div class="info" style="margin-top: 30px;">
+            <h3>After clearing cache:</h3>
+            <ol>
+                <li>Close this tab</li>
+                <li>Close <strong>ALL</strong> tabs with <code>localhost:3000</code></li>
+                <li>Open <strong>ONE</strong> new tab and navigate to <code>http://localhost:3000</code></li>
+                <li>Open Developer Tools (F12) and monitor the Console</li>
+                <li>You should see NO "Quota exceeded" errors</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        function showResult(message) {
+            const result = document.getElementById('result');
+            result.textContent = message;
+            result.style.display = 'block';
+            setTimeout(() => {
+                result.style.display = 'none';
+            }, 5000);
+        }
+
+        async function clearIndexedDB() {
+            try {
+                const databases = await indexedDB.databases();
+                let count = 0;
+                
+                for (const db of databases) {
+                    if (db.name) {
+                        indexedDB.deleteDatabase(db.name);
+                        count++;
+                        console.log('Deleted IndexedDB:', db.name);
+                    }
+                }
+                
+                showResult(`✅ Cleared ${count} IndexedDB databases!`);
+            } catch (error) {
+                console.error('Error clearing IndexedDB:', error);
+                showResult('❌ Error clearing IndexedDB. Check console for details.');
+            }
+        }
+
+        async function clearAllCache() {
+            try {
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    await Promise.all(cacheNames.map(name => caches.delete(name)));
+                    console.log('Cleared', cacheNames.length, 'cache(s)');
+                }
+                showResult('✅ All caches cleared!');
+            } catch (error) {
+                console.error('Error clearing cache:', error);
+                showResult('❌ Error clearing cache. Check console for details.');
+            }
+        }
+
+        async function clearServiceWorkers() {
+            try {
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    await Promise.all(registrations.map(reg => reg.unregister()));
+                    console.log('Unregistered', registrations.length, 'service worker(s)');
+                    showResult(`✅ Unregistered ${registrations.length} service worker(s)!`);
+                } else {
+                    showResult('ℹ️ No service workers found.');
+                }
+            } catch (error) {
+                console.error('Error clearing service workers:', error);
+                showResult('❌ Error clearing service workers. Check console for details.');
+            }
+        }
+
+        async function clearEverything() {
+            try {
+                // Clear IndexedDB
+                await clearIndexedDB();
+                
+                // Clear Cache
+                await clearAllCache();
+                
+                // Clear Service Workers
+                await clearServiceWorkers();
+                
+                // Clear localStorage
+                localStorage.clear();
+                console.log('Cleared localStorage');
+                
+                // Clear sessionStorage
+                sessionStorage.clear();
+                console.log('Cleared sessionStorage');
+                
+                showResult('✅ EVERYTHING CLEARED! Close all tabs and restart.');
+            } catch (error) {
+                console.error('Error during nuclear clear:', error);
+                showResult('❌ Error clearing everything. Check console for details.');
+            }
+        }
+
+        // Show current IndexedDB databases on load
+        window.addEventListener('load', async () => {
+            try {
+                const databases = await indexedDB.databases();
+                console.log('Current IndexedDB databases:', databases);
+            } catch (error) {
+                console.error('Error listing databases:', error);
+            }
+        });
+    </script>
+</body>
+</html>

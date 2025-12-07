@@ -7,7 +7,6 @@ import {
   getDocs,
   query,
   orderBy,
-  onSnapshot,
   serverTimestamp,
   Timestamp,
   setDoc,
@@ -15,17 +14,22 @@ import {
 } from 'firebase/firestore';
 import { db } from './firebase';
 import { TeamMember } from '@/types';
+import { cachedQuery } from './firebaseCache';
 
 const TEAM_COLLECTION = 'teamMembers';
 
-// Real-time listener for team members
-export const subscribeToTeamMembers = (
-  callback: (members: TeamMember[]) => void
-) => {
-  const q = query(collection(db, TEAM_COLLECTION), orderBy('createdAt', 'desc'));
-  
-  return onSnapshot(q, (snapshot) => {
-    const members: TeamMember[] = snapshot.docs.map((doc) => {
+/**
+ * REMOVED: subscribeToTeamMembers (deprecated to prevent quota exhaustion)
+ * Use getTeamMembers() with manual polling instead
+ */
+
+// Get all team members (with caching to prevent duplicate reads)
+export const getTeamMembers = async (): Promise<TeamMember[]> => {
+  return cachedQuery('team-members', async () => {
+    const q = query(collection(db, TEAM_COLLECTION), orderBy('createdAt', 'desc'));
+    const snapshot = await getDocs(q);
+    
+    return snapshot.docs.map((doc) => {
       const data = doc.data();
       return {
         id: doc.id,
@@ -52,42 +56,7 @@ export const subscribeToTeamMembers = (
         performanceMetrics: data.performanceMetrics,
       };
     });
-    callback(members);
-  });
-};
-
-// Get all team members
-export const getTeamMembers = async (): Promise<TeamMember[]> => {
-  const q = query(collection(db, TEAM_COLLECTION), orderBy('createdAt', 'desc'));
-  const snapshot = await getDocs(q);
-  
-  return snapshot.docs.map((doc) => {
-    const data = doc.data();
-    return {
-      id: doc.id,
-      name: data.name,
-      email: data.email,
-      avatar: data.avatar,
-      role: data.role,
-      department: data.department,
-      skills: data.skills || [],
-      workload: data.workload || 0,
-      availability: {
-        status: data.availability?.status || 'available',
-        timeOff: data.availability?.timeOff?.map((to: any) => ({
-          start: to.start?.toDate ? to.start.toDate() : new Date(to.start),
-          end: to.end?.toDate ? to.end.toDate() : new Date(to.end),
-          reason: to.reason,
-        })) || [],
-      },
-      timezone: data.timezone,
-      bio: data.bio,
-      socialLinks: data.socialLinks,
-      achievements: data.achievements || [],
-      joinedAt: data.joinedAt?.toDate ? data.joinedAt.toDate() : new Date(),
-      performanceMetrics: data.performanceMetrics,
-    };
-  });
+  }, 90000); // Cache for 90 seconds
 };
 
 // Add a new team member

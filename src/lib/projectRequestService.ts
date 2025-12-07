@@ -9,13 +9,14 @@ import {
   updateDoc,
   deleteDoc,
   doc,
-  onSnapshot,
   query,
   where,
   Timestamp,
   serverTimestamp,
+  getDocs,
 } from 'firebase/firestore';
 import { db } from './firebase';
+import { cachedQuery } from './firebaseCache';
 
 export interface ProjectRequest {
   id?: string;
@@ -76,64 +77,59 @@ export const submitProjectRequest = async (
 };
 
 /**
- * Subscribe to pending project requests (for admin)
+ * REMOVED: subscribeToPendingProjectRequests (deprecated to prevent quota exhaustion)
+ * Use getPendingProjectRequests() with manual polling instead
  */
-export const subscribeToPendingProjectRequests = (
-  onUpdate: (requests: ProjectRequest[]) => void,
-  onError?: (error: Error) => void
-) => {
-  console.log('🔌 Setting up project requests subscription...');
-  const q = query(
-    collection(db, COLLECTION_NAME),
-    where('status', '==', 'pending')
-  );
 
-  const unsubscribe = onSnapshot(
-    q,
-    (snapshot) => {
-      console.log('📡 Snapshot received:', {
-        size: snapshot.size,
-        empty: snapshot.empty,
-        metadata: snapshot.metadata
-      });
-      
-      const requests: ProjectRequest[] = [];
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        console.log('📄 Processing doc:', doc.id, data.name, data.status);
-        requests.push({
-          id: doc.id,
-          name: data.name,
-          description: data.description,
-          icon: data.icon,
-          color: data.color,
-          workspace: data.workspace,
-          startDate: data.startDate?.toDate() || new Date(),
-          targetEndDate: data.targetEndDate?.toDate() || new Date(),
-          budget: data.budget,
-          tags: data.tags || [],
-          status: data.status,
-          requestedBy: data.requestedBy,
-          requestedAt: data.requestedAt?.toDate() || new Date(),
-          reviewedBy: data.reviewedBy,
-          reviewedAt: data.reviewedAt?.toDate(),
-          rejectionReason: data.rejectionReason,
+/**
+ * Get pending project requests (with caching to prevent duplicate reads)
+ */
+export const getPendingProjectRequests = async (): Promise<{ 
+  success: boolean; 
+  data?: ProjectRequest[]; 
+  error?: string 
+}> => {
+  try {
+    return {
+      success: true,
+      data: await cachedQuery('project-requests-pending', async () => {
+        const q = query(
+          collection(db, COLLECTION_NAME),
+          where('status', '==', 'pending')
+        );
+
+        const snapshot = await getDocs(q);
+        
+        const requests: ProjectRequest[] = snapshot.docs.map((doc) => {
+          const data = doc.data();
+          return {
+            id: doc.id,
+            name: data.name,
+            description: data.description,
+            icon: data.icon,
+            color: data.color,
+            workspace: data.workspace,
+            startDate: data.startDate?.toDate() || new Date(),
+            targetEndDate: data.targetEndDate?.toDate() || new Date(),
+            budget: data.budget,
+            tags: data.tags || [],
+            status: data.status,
+            requestedBy: data.requestedBy,
+            requestedAt: data.requestedAt?.toDate() || new Date(),
+            reviewedBy: data.reviewedBy,
+            reviewedAt: data.reviewedAt?.toDate(),
+            rejectionReason: data.rejectionReason,
+          };
         });
-      });
 
-      // Sort by requestedAt descending on client side
-      requests.sort((a, b) => b.requestedAt.getTime() - a.requestedAt.getTime());
-
-      console.log(`📊 Loaded ${requests.length} pending project requests`);
-      onUpdate(requests);
-    },
-    (error) => {
-      console.error('❌ Error subscribing to project requests:', error);
-      onError?.(error as Error);
-    }
-  );
-
-  return unsubscribe;
+        // Sort by requestedAt descending
+        return requests.sort((a, b) => b.requestedAt.getTime() - a.requestedAt.getTime());
+      }, 60000) // Cache for 1 minute
+    };
+  } catch (error) {
+    console.error('❌ Error getting project requests:', error);
+    return { success: false, error: (error as Error).message };
+  }
 };
 
 /**
@@ -305,20 +301,14 @@ export const getPendingProjectRequestsCount = async (): Promise<number> => {
 };
 
 /**
- * Subscribe to project request count (for badge)
+ * REMOVED: subscribeToProjectRequestCount (deprecated to prevent quota exhaustion)
+ * Use getProjectRequestCount() with manual polling instead
  */
-export const subscribeToProjectRequestCount = (
-  onUpdate: (count: number) => void,
-  onError?: (error: Error) => void
-) => {
-  const q = query(
-    collection(db, COLLECTION_NAME),
-    where('status', '==', 'pending')
-  );
 
-  return onSnapshot(
-    q,
-    (snapshot) => onUpdate(snapshot.size),
-    (error) => onError?.(error as Error)
-  );
+/**
+ * Get project request count (with caching)
+ */
+export const getProjectRequestCount = async (): Promise<number> => {
+  const result = await getPendingProjectRequests();
+  return result.success && result.data ? result.data.length : 0;
 };

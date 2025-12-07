@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Task Count Editor Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .demo-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .feature-box {
+            padding: 2rem;
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border-radius: 15px;
+            border: 2px solid #bae6fd;
+            transition: transform 0.3s;
+        }
+
+        .feature-box:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #0369a1;
+        }
+
+        .feature-desc {
+            color: #475569;
+            line-height: 1.6;
+        }
+
+        .workflow {
+            background: linear-gradient(to right, #fef3c7, #fde68a);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+        }
+
+        .workflow-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            color: #92400e;
+            text-align: center;
+        }
+
+        .workflow-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .step-content h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: #1f2937;
+        }
+
+        .step-content p {
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        .demo-dialog {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 700px;
+            margin: 2rem auto;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            border: 3px solid #8b5cf6;
+        }
+
+        .dialog-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e5e7eb;
+        }
+
+        .dialog-header h2 {
+            font-size: 1.5rem;
+            color: #1f2937;
+        }
+
+        .member-info-box {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .avatar-demo {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            border: 3px solid white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+        }
+
+        .member-details h3 {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+        }
+
+        .member-details p {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        .counts-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .count-section h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #6b7280;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .count-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .count-item.readonly {
+            background: #f3f4f6;
+        }
+
+        .count-item.editable {
+            background: #fef3c7;
+            border: 2px solid #fcd34d;
+        }
+
+        .count-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+
+        .count-value {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        input[type="number"] {
+            width: 80px;
+            padding: 0.5rem;
+            border: 2px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .total-row {
+            padding: 1rem;
+            background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+            border: 2px solid #a78bfa;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .dialog-footer {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            justify-content: flex-end;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .btn-cancel {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .btn-cancel:hover {
+            background: #e5e7eb;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6);
+        }
+
+        .success-message {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: #dcfce7;
+            border: 2px solid #86efac;
+            border-radius: 8px;
+            color: #166534;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            padding: 2rem;
+            border-radius: 15px;
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .highlight h3 {
+            font-size: 1.8rem;
+            color: #92400e;
+            margin-bottom: 1rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.6);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📝 Admin Task Count Editor</h1>
+            <p class="subtitle">Direct control over team workload data</p>
+        </header>
+
+        <!-- Key Features -->
+        <div class="demo-card">
+            <h2 style="font-size: 2rem; margin-bottom: 1.5rem; text-align: center;">✨ Key Features</h2>
+            <div class="feature-grid">
+                <div class="feature-box">
+                    <div class="feature-icon">✏️</div>
+                    <div class="feature-title">Easy Editing</div>
+                    <div class="feature-desc">
+                        Click "Edit" button next to any team member to update their task counts instantly.
+                    </div>
+                </div>
+                <div class="feature-box">
+                    <div class="feature-icon">🔄</div>
+                    <div class="feature-title">Real-Time Sync</div>
+                    <div class="feature-desc">
+                        Changes sync to Firebase immediately and update across all dashboard views.
+                    </div>
+                </div>
+                <div class="feature-box">
+                    <div class="feature-icon">📊</div>
+                    <div class="feature-title">Side-by-Side Compare</div>
+                    <div class="feature-desc">
+                        See current vs new counts side-by-side before saving your changes.
+                    </div>
+                </div>
+                <div class="feature-box">
+                    <div class="feature-icon">✅</div>
+                    <div class="feature-title">Instant Feedback</div>
+                    <div class="feature-desc">
+                        Success confirmation with smooth animations and auto-close dialog.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Demo Dialog -->
+        <div class="demo-card">
+            <h2 style="font-size: 2rem; margin-bottom: 2rem; text-align: center;">🎨 Edit Dialog Preview</h2>
+            
+            <div class="demo-dialog">
+                <div class="dialog-header">
+                    <span style="font-size: 1.5rem;">✏️</span>
+                    <h2>Update Task Counts for Sarah Johnson</h2>
+                </div>
+
+                <div class="success-message" id="successMsg" style="display: none;">
+                    <span style="font-size: 1.5rem;">✅</span>
+                    <span>Task counts updated successfully!</span>
+                </div>
+
+                <div class="member-info-box">
+                    <div class="avatar-demo">👩‍💻</div>
+                    <div class="member-details">
+                        <h3>Sarah Johnson</h3>
+                        <p>sarah.johnson@company.com</p>
+                        <p style="font-size: 0.8rem;">Senior Developer • Engineering</p>
+                    </div>
+                </div>
+
+                <div class="counts-grid">
+                    <!-- Current Counts -->
+                    <div class="count-section">
+                        <h4>Current Counts</h4>
+                        <div class="count-item readonly">
+                            <div class="count-label">
+                                <span style="color: #16a34a;">✓</span>
+                                <span>Done</span>
+                            </div>
+                            <div class="count-value">15</div>
+                        </div>
+                        <div class="count-item readonly">
+                            <div class="count-label">
+                                <span style="color: #2563eb;">⚡</span>
+                                <span>Active</span>
+                            </div>
+                            <div class="count-value">6</div>
+                        </div>
+                        <div class="count-item readonly">
+                            <div class="count-label">
+                                <span style="color: #d97706;">⏰</span>
+                                <span>Pending</span>
+                            </div>
+                            <div class="count-value">3</div>
+                        </div>
+                        <div class="count-item readonly">
+                            <div class="count-label">
+                                <span style="color: #dc2626;">❌</span>
+                                <span>Blocked</span>
+                            </div>
+                            <div class="count-value">0</div>
+                        </div>
+                        <div class="count-item total-row">
+                            <div class="count-label"><strong>Total</strong></div>
+                            <div class="count-value" style="color: #8b5cf6;">24</div>
+                        </div>
+                    </div>
+
+                    <!-- New Counts -->
+                    <div class="count-section">
+                        <h4>New Counts</h4>
+                        <div class="count-item editable">
+                            <div class="count-label">
+                                <span style="color: #16a34a;">✓</span>
+                                <span>Done</span>
+                            </div>
+                            <input type="number" value="18" id="doneInput" min="0" />
+                        </div>
+                        <div class="count-item editable">
+                            <div class="count-label">
+                                <span style="color: #2563eb;">⚡</span>
+                                <span>Active</span>
+                            </div>
+                            <input type="number" value="5" id="activeInput" min="0" />
+                        </div>
+                        <div class="count-item editable">
+                            <div class="count-label">
+                                <span style="color: #d97706;">⏰</span>
+                                <span>Pending</span>
+                            </div>
+                            <input type="number" value="4" id="pendingInput" min="0" />
+                        </div>
+                        <div class="count-item editable">
+                            <div class="count-label">
+                                <span style="color: #dc2626;">❌</span>
+                                <span>Blocked</span>
+                            </div>
+                            <input type="number" value="1" id="blockedInput" min="0" />
+                        </div>
+                        <div class="count-item total-row">
+                            <div class="count-label"><strong>New Total</strong></div>
+                            <div class="count-value" style="color: #8b5cf6;" id="newTotal">28</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dialog-footer">
+                    <button class="btn btn-cancel">
+                        <span>❌</span>
+                        <span>Cancel</span>
+                    </button>
+                    <button class="btn btn-save" id="saveBtn">
+                        <span>💾</span>
+                        <span>Save Changes</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Workflow -->
+        <div class="demo-card">
+            <div class="workflow">
+                <div class="workflow-title">🚀 How It Works</div>
+                <div class="workflow-steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <div class="step-content">
+                            <h3>Navigate to Admin Dashboard</h3>
+                            <p>Go to the Team Workload Overview section at <code>http://localhost:3000/admin/dashboard</code></p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-content">
+                            <h3>Click Edit Button</h3>
+                            <p>Find the team member you want to update and click the "Edit" button next to their name</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-content">
+                            <h3>Adjust Task Counts</h3>
+                            <p>Update the numbers for Done, Active, Pending, and Blocked tasks. See the new total calculate automatically</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <div class="step-content">
+                            <h3>Save Changes</h3>
+                            <p>Click "Save Changes" to update Firebase. Get instant confirmation and auto-close dialog</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">5</div>
+                        <div class="step-content">
+                            <h3>See Real-Time Updates</h3>
+                            <p>Watch the dashboard update immediately. Changes sync across all pages and team views</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="highlight">
+            <h3>🎯 Ready to Try It?</h3>
+            <p style="color: #92400e; margin-bottom: 1rem;">
+                Edit team member task counts with just a few clicks!
+            </p>
+            <a href="http://localhost:3000/admin/dashboard" class="cta-button">
+                Open Admin Dashboard →
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Calculate new total dynamically
+        function updateTotal() {
+            const done = parseInt(document.getElementById('doneInput').value) || 0;
+            const active = parseInt(document.getElementById('activeInput').value) || 0;
+            const pending = parseInt(document.getElementById('pendingInput').value) || 0;
+            const blocked = parseInt(document.getElementById('blockedInput').value) || 0;
+            const total = done + active + pending + blocked;
+            document.getElementById('newTotal').textContent = total;
+        }
+
+        // Add event listeners
+        document.getElementById('doneInput').addEventListener('input', updateTotal);
+        document.getElementById('activeInput').addEventListener('input', updateTotal);
+        document.getElementById('pendingInput').addEventListener('input', updateTotal);
+        document.getElementById('blockedInput').addEventListener('input', updateTotal);
+
+        // Save button simulation
+        document.getElementById('saveBtn').addEventListener('click', function() {
+            this.innerHTML = '<span>⏳</span><span>Saving...</span>';
+            this.disabled = true;
+            
+            setTimeout(() => {
+                document.getElementById('successMsg').style.display = 'flex';
+                this.innerHTML = '<span>✅</span><span>Saved!</span>';
+                
+                setTimeout(() => {
+                    this.disabled = false;
+                    this.innerHTML = '<span>💾</span><span>Save Changes</span>';
+                    document.getElementById('successMsg').style.display = 'none';
+                }, 2000);
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

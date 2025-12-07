@@ -80,8 +80,8 @@ export default function ProjectApprovalsPage() {
     };
 
     loadRequests();
-    // Poll every 2 minutes
-    const interval = setInterval(loadRequests, 120000);
+    // Poll every 15 minutes to reduce quota usage
+    const interval = setInterval(loadRequests, 900000);
 
     return () => clearInterval(interval);
   }, [user]);

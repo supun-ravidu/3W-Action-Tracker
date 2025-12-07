@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Workload Tracking - Visual Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .demo-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 2px solid;
+            background: linear-gradient(135deg, var(--from), var(--to));
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .stat-card.green {
+            --from: #dcfce7;
+            --to: #bbf7d0;
+            border-color: #86efac;
+        }
+
+        .stat-card.blue {
+            --from: #dbeafe;
+            --to: #bfdbfe;
+            border-color: #93c5fd;
+        }
+
+        .stat-card.amber {
+            --from: #fef3c7;
+            --to: #fde68a;
+            border-color: #fcd34d;
+        }
+
+        .stat-card.red {
+            --from: #fee2e2;
+            --to: #fecaca;
+            border-color: #fca5a5;
+        }
+
+        .stat-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-sub {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .member-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .member-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: linear-gradient(to right, #ffffff, #f9fafb);
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+
+        .member-card:hover {
+            border-color: #8b5cf6;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+        }
+
+        .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            border: 3px solid white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .member-info {
+            flex: 1;
+        }
+
+        .member-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.3rem;
+        }
+
+        .member-role {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        .task-badges {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 1px solid;
+        }
+
+        .badge.green {
+            background: #dcfce7;
+            color: #16a34a;
+            border-color: #86efac;
+        }
+
+        .badge.blue {
+            background: #dbeafe;
+            color: #2563eb;
+            border-color: #93c5fd;
+        }
+
+        .badge.amber {
+            background: #fef3c7;
+            color: #d97706;
+            border-color: #fcd34d;
+        }
+
+        .badge.red {
+            background: #fee2e2;
+            color: #dc2626;
+            border-color: #fca5a5;
+        }
+
+        .member-total {
+            text-align: center;
+        }
+
+        .total-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #8b5cf6;
+        }
+
+        .total-label {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(to right, #10b981, #059669);
+            transition: width 0.5s ease;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .feature {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border-radius: 12px;
+            border: 2px solid #bae6fd;
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #0369a1;
+        }
+
+        .feature-desc {
+            color: #475569;
+            line-height: 1.6;
+        }
+
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: white;
+            border-radius: 20px;
+            border: 2px solid #22c55e;
+            font-weight: 600;
+            color: #16a34a;
+        }
+
+        .pulse {
+            width: 10px;
+            height: 10px;
+            background: #22c55e;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(1.2);
+            }
+        }
+
+        .cta-section {
+            text-align: center;
+            padding: 3rem;
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border-radius: 20px;
+            margin-top: 2rem;
+        }
+
+        .cta-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #92400e;
+        }
+
+        .cta-button {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(139, 92, 246, 0.6);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 Team Workload Tracking System</h1>
+            <p class="subtitle">Real-time task monitoring with Firebase integration</p>
+            <div style="margin-top: 1rem;">
+                <span class="live-indicator">
+                    <span class="pulse"></span>
+                    Live Updates Active
+                </span>
+            </div>
+        </header>
+
+        <!-- Summary Statistics -->
+        <div class="demo-section">
+            <h2 class="section-title">📊 Real-Time Task Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-card green">
+                    <div class="stat-icon">✅</div>
+                    <div class="stat-label">Done Tasks</div>
+                    <div class="stat-value">42</div>
+                    <div class="stat-sub">85% completion rate</div>
+                </div>
+                <div class="stat-card blue">
+                    <div class="stat-icon">⚡</div>
+                    <div class="stat-label">Active Tasks</div>
+                    <div class="stat-value">28</div>
+                    <div class="stat-sub">In progress now</div>
+                </div>
+                <div class="stat-card amber">
+                    <div class="stat-icon">⏰</div>
+                    <div class="stat-label">Pending Tasks</div>
+                    <div class="stat-value">15</div>
+                    <div class="stat-sub">Awaiting start</div>
+                </div>
+                <div class="stat-card red">
+                    <div class="stat-icon">❌</div>
+                    <div class="stat-label">Blocked Tasks</div>
+                    <div class="stat-value">3</div>
+                    <div class="stat-sub">Need attention</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team Members Workload -->
+        <div class="demo-section">
+            <h2 class="section-title">👥 Team Members Workload</h2>
+            <div class="member-list">
+                <div class="member-card">
+                    <div class="avatar">🏆</div>
+                    <div class="member-info">
+                        <div class="member-name">Sarah Johnson</div>
+                        <div class="member-role">Senior Developer • Engineering</div>
+                        <div class="task-badges">
+                            <span class="badge green">✓ 15 Done</span>
+                            <span class="badge blue">⚡ 6 Active</span>
+                            <span class="badge amber">⏰ 3 Pending</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 75%"></div>
+                        </div>
+                    </div>
+                    <div class="member-total">
+                        <div class="total-value">24</div>
+                        <div class="total-label">total tasks</div>
+                    </div>
+                </div>
+
+                <div class="member-card">
+                    <div class="avatar">🔥</div>
+                    <div class="member-info">
+                        <div class="member-name">Michael Chen</div>
+                        <div class="member-role">Product Designer • Design</div>
+                        <div class="task-badges">
+                            <span class="badge green">✓ 12 Done</span>
+                            <span class="badge blue">⚡ 8 Active</span>
+                            <span class="badge amber">⏰ 4 Pending</span>
+                            <span class="badge red">❌ 2 Blocked</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 46%"></div>
+                        </div>
+                    </div>
+                    <div class="member-total">
+                        <div class="total-value">26</div>
+                        <div class="total-label">total tasks</div>
+                    </div>
+                </div>
+
+                <div class="member-card">
+                    <div class="avatar">⭐</div>
+                    <div class="member-info">
+                        <div class="member-name">Emily Rodriguez</div>
+                        <div class="member-role">Project Manager • Operations</div>
+                        <div class="task-badges">
+                            <span class="badge green">✓ 10 Done</span>
+                            <span class="badge blue">⚡ 5 Active</span>
+                            <span class="badge amber">⏰ 3 Pending</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 56%"></div>
+                        </div>
+                    </div>
+                    <div class="member-total">
+                        <div class="total-value">18</div>
+                        <div class="total-label">total tasks</div>
+                    </div>
+                </div>
+
+                <div class="member-card">
+                    <div class="avatar">💎</div>
+                    <div class="member-info">
+                        <div class="member-name">David Kim</div>
+                        <div class="member-role">Backend Developer • Engineering</div>
+                        <div class="task-badges">
+                            <span class="badge green">✓ 5 Done</span>
+                            <span class="badge blue">⚡ 9 Active</span>
+                            <span class="badge amber">⏰ 5 Pending</span>
+                            <span class="badge red">❌ 1 Blocked</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 25%"></div>
+                        </div>
+                    </div>
+                    <div class="member-total">
+                        <div class="total-value">20</div>
+                        <div class="total-label">total tasks</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Features -->
+        <div class="demo-section">
+            <h2 class="section-title">✨ Key Features</h2>
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">🔥</div>
+                    <div class="feature-title">Real-Time Firebase Sync</div>
+                    <div class="feature-desc">
+                        Instant updates across all pages when tasks change. No refresh needed!
+                    </div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🎨</div>
+                    <div class="feature-title">Creative Modern Design</div>
+                    <div class="feature-desc">
+                        Beautiful gradient cards, smooth animations, and intuitive color coding.
+                    </div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📊</div>
+                    <div class="feature-title">Comprehensive Analytics</div>
+                    <div class="feature-desc">
+                        Track done, active, pending, and blocked tasks for each team member.
+                    </div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🏆</div>
+                    <div class="feature-title">Top Performers</div>
+                    <div class="feature-desc">
+                        Recognize team members with highest completion rates automatically.
+                    </div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🔄</div>
+                    <div class="feature-title">Background Sync</div>
+                    <div class="feature-desc">
+                        Automatic workload updates every 5 minutes plus instant listener updates.
+                    </div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📱</div>
+                    <div class="feature-title">Fully Responsive</div>
+                    <div class="feature-desc">
+                        Works perfectly on desktop, tablet, and mobile devices.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="cta-section">
+            <div class="cta-title">🚀 Ready to Try It?</div>
+            <p style="margin-bottom: 2rem; color: #92400e;">
+                Visit the admin dashboard or team page to see real-time workload tracking in action!
+            </p>
+            <a href="http://localhost:3000/admin/dashboard" class="cta-button">
+                Open Admin Dashboard →
+            </a>
+            <br><br>
+            <a href="http://localhost:3000/team" class="cta-button" style="background: linear-gradient(135deg, #06b6d4, #0891b2);">
+                Open Team Page →
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Simulate real-time updates
+        setInterval(() => {
+            const progressBars = document.querySelectorAll('.progress-fill');
+            progressBars.forEach(bar => {
+                const currentWidth = parseInt(bar.style.width);
+                const newWidth = Math.min(100, currentWidth + Math.random() * 5);
+                bar.style.width = newWidth + '%';
+            });
+        }, 3000);
+
+        // Add hover effect to cards
+        document.querySelectorAll('.stat-card, .member-card').forEach(card => {
+            card.addEventListener('click', function() {
+                this.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 200);
+            });
+        });
+    </script>
+</body>
+</html>

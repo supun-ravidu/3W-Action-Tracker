@@ -1,7 +1,6 @@
 import {
   collection,
   query,
-  onSnapshot,
   getDocs,
   where,
   doc,
@@ -12,6 +11,7 @@ import {
 } from 'firebase/firestore';
 import { db } from './firebase';
 import { ActionPlan, TeamMember } from '@/types';
+import { cachedQuery } from './firebaseCache';
 
 export interface TeamMemberWorkload {
   memberId: string;
@@ -39,147 +39,84 @@ const ACTION_PLANS_COLLECTION = 'actionPlans';
 const TEAM_COLLECTION = 'teamMembers';
 
 /**
- * Subscribe to real-time workload data for all team members
- * Optimized to reduce Firebase reads and prevent quota exhaustion
+ * REMOVED: subscribeToTeamWorkload (deprecated to prevent quota exhaustion)
+ * Use getTeamWorkload() with manual polling instead
  */
-export const subscribeToTeamWorkload = (
-  callback: (workloads: TeamMemberWorkload[]) => void,
-  onError?: (error: Error) => void
-) => {
-  // Subscribe to both collections with optimized queries
-  const actionsQuery = query(collection(db, ACTION_PLANS_COLLECTION));
-  const teamQuery = query(collection(db, TEAM_COLLECTION));
 
-  let actionsData: ActionPlan[] = [];
-  let teamData: TeamMember[] = [];
-  let calculationTimeout: NodeJS.Timeout | null = null;
+/**
+ * Get team workload data (with caching to prevent duplicate reads)
+ */
+export const getTeamWorkload = async (): Promise<TeamMemberWorkload[]> => {
+  return cachedQuery('team-workload', async () => {
+    const [actionsSnapshot, teamSnapshot] = await Promise.all([
+      getDocs(query(collection(db, ACTION_PLANS_COLLECTION))),
+      getDocs(query(collection(db, TEAM_COLLECTION)))
+    ]);
 
-  // Debounced calculation to prevent excessive updates
-  const calculateWorkloads = () => {
-    if (calculationTimeout) {
-      clearTimeout(calculationTimeout);
-    }
+    const actionsData: ActionPlan[] = actionsSnapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        ...data,
+        createdAt: data.createdAt?.toDate ? data.createdAt.toDate() : new Date(data.createdAt),
+        updatedAt: data.updatedAt?.toDate ? data.updatedAt.toDate() : new Date(data.updatedAt),
+      } as ActionPlan;
+    });
 
-    calculationTimeout = setTimeout(() => {
-      const workloads: TeamMemberWorkload[] = teamData.map((member) => {
-        // Filter actions assigned to this member
-        const memberActions = actionsData.filter(
-          (action) => action.who?.primaryAssignee?.id === member.id
-        );
+    const teamData: TeamMember[] = teamSnapshot.docs.map((doc) => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        name: data.name,
+        email: data.email,
+        avatar: data.avatar,
+        role: data.role,
+        department: data.department,
+      } as TeamMember;
+    });
 
-        // Count by status
-        const done = memberActions.filter((a) => a.status === 'completed').length;
-        const active = memberActions.filter((a) => a.status === 'in-progress').length;
-        const pending = memberActions.filter((a) => a.status === 'pending').length;
-        const blocked = memberActions.filter((a) => a.status === 'blocked').length;
+    return teamData.map((member) => {
+      const memberActions = actionsData.filter(
+        (action) => action.who?.primaryAssignee?.id === member.id
+      );
 
-        // Get recent tasks (last 5)
-        const recentTasks = memberActions
-          .sort((a, b) => {
-            const dateA = a.updatedAt instanceof Date ? a.updatedAt : new Date(a.updatedAt);
-            const dateB = b.updatedAt instanceof Date ? b.updatedAt : new Date(b.updatedAt);
-            return dateB.getTime() - dateA.getTime();
-          })
-          .slice(0, 5)
-          .map((action) => ({
-            id: action.id,
-            title: action.title,
-            status: action.status,
-            priority: action.priority,
-          }));
+      const done = memberActions.filter((a) => a.status === 'completed').length;
+      const active = memberActions.filter((a) => a.status === 'in-progress').length;
+      const pending = memberActions.filter((a) => a.status === 'pending').length;
+      const blocked = memberActions.filter((a) => a.status === 'blocked').length;
 
-        return {
-          memberId: member.id,
-          memberName: member.name,
-          email: member.email,
-          avatar: member.avatar,
-          role: member.role,
-          department: member.department,
-          taskCounts: {
-            done,
-            active,
-            pending,
-            blocked,
-            total: done + active + pending + blocked,
-          },
-          recentTasks,
-        };
-      });
+      const recentTasks = memberActions
+        .sort((a, b) => {
+          const dateA = a.updatedAt instanceof Date ? a.updatedAt : new Date(a.updatedAt);
+          const dateB = b.updatedAt instanceof Date ? b.updatedAt : new Date(b.updatedAt);
+          return dateB.getTime() - dateA.getTime();
+        })
+        .slice(0, 5)
+        .map((action) => ({
+          id: action.id,
+          title: action.title,
+          status: action.status,
+          priority: action.priority,
+        }));
 
-      callback(workloads);
-    }, 300); // Debounce by 300ms to batch rapid updates
-  };
-
-  // Subscribe to actions with error handling for quota limits
-  const unsubscribeActions = onSnapshot(
-    actionsQuery,
-    {
-      // Use includeMetadataChanges: false to reduce reads
-      includeMetadataChanges: false,
-    },
-    (snapshot) => {
-      // Only process actual data changes
-      if (!snapshot.metadata.hasPendingWrites) {
-        actionsData = snapshot.docs.map((doc) => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            ...data,
-            createdAt: data.createdAt?.toDate ? data.createdAt.toDate() : new Date(data.createdAt),
-            updatedAt: data.updatedAt?.toDate ? data.updatedAt.toDate() : new Date(data.updatedAt),
-          } as ActionPlan;
-        });
-        calculateWorkloads();
-      }
-    },
-    (error) => {
-      console.error('Error subscribing to actions:', error);
-      if (error.code === 'resource-exhausted') {
-        console.warn('Firebase quota exceeded. Consider upgrading your plan or reducing reads.');
-      }
-      onError?.(error);
-    }
-  );
-
-  // Subscribe to team members with error handling
-  const unsubscribeTeam = onSnapshot(
-    teamQuery,
-    {
-      includeMetadataChanges: false,
-    },
-    (snapshot) => {
-      if (!snapshot.metadata.hasPendingWrites) {
-        teamData = snapshot.docs.map((doc) => {
-          const data = doc.data();
-          return {
-            id: doc.id,
-            name: data.name,
-            email: data.email,
-            avatar: data.avatar,
-            role: data.role,
-            department: data.department,
-          } as TeamMember;
-        });
-        calculateWorkloads();
-      }
-    },
-    (error) => {
-      console.error('Error subscribing to team members:', error);
-      if (error.code === 'resource-exhausted') {
-        console.warn('Firebase quota exceeded. Consider upgrading your plan or reducing reads.');
-      }
-      onError?.(error);
-    }
-  );
-
-  // Return unsubscribe function
-  return () => {
-    if (calculationTimeout) {
-      clearTimeout(calculationTimeout);
-    }
-    unsubscribeActions();
-    unsubscribeTeam();
-  };
+      return {
+        memberId: member.id,
+        memberName: member.name,
+        email: member.email,
+        avatar: member.avatar,
+        role: member.role,
+        department: member.department,
+        taskCounts: {
+          done,
+          active,
+          pending,
+          blocked,
+          total: done + active + pending + blocked,
+        },
+        recentTasks,
+      };
+    });
+  }, 90000);
 };
 
 /**

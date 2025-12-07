@@ -3,7 +3,7 @@
  * Real-time Firebase analytics for admin dashboard
  */
 
-import { collection, query, getDocs, onSnapshot, where, Timestamp } from 'firebase/firestore';
+import { collection, query, getDocs, where, Timestamp } from 'firebase/firestore';
 import { db } from './firebase';
 
 export interface DashboardStats {

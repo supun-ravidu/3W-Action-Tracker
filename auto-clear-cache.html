@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Auto Clear Browser Cache</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            text-align: center;
+        }
+        h1 { color: #667eea; margin-top: 0; }
+        .status { font-size: 48px; margin: 20px 0; }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover { transform: scale(1.05); }
+        .instructions {
+            background: #f3f4f6;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .success { background: #10b981; color: white; padding: 15px; border-radius: 8px; margin: 10px 0; }
+        .info { background: #fef3c7; padding: 15px; border-radius: 8px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧹 Automatic Cache Cleaner</h1>
+        <div class="status" id="status">⏳</div>
+        <div id="message">Preparing to clear cache...</div>
+        
+        <div class="instructions">
+            <h3>This page will:</h3>
+            <ol style="text-align: left;">
+                <li>Delete all IndexedDB databases</li>
+                <li>Clear all cache storage</li>
+                <li>Unregister service workers</li>
+                <li>Clear localStorage & sessionStorage</li>
+            </ol>
+        </div>
+
+        <button onclick="clearEverything()" style="font-size: 24px;">
+            🔥 CLEAR ALL CACHE NOW
+        </button>
+
+        <div class="info">
+            <strong>⚠️ After clicking the button:</strong><br>
+            1. Wait for "Success" message<br>
+            2. Close this tab<br>
+            3. Close ALL tabs with localhost:3000<br>
+            4. Open ONE new tab → http://localhost:3000<br>
+        </div>
+    </div>
+
+    <script>
+        async function clearEverything() {
+            const statusEl = document.getElementById('status');
+            const messageEl = document.getElementById('message');
+            
+            try {
+                statusEl.textContent = '⏳';
+                messageEl.innerHTML = '<strong>Step 1/5:</strong> Clearing IndexedDB...';
+                
+                // Step 1: Clear IndexedDB
+                const databases = await indexedDB.databases();
+                for (const db of databases) {
+                    if (db.name) {
+                        indexedDB.deleteDatabase(db.name);
+                        console.log('Deleted IndexedDB:', db.name);
+                    }
+                }
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                messageEl.innerHTML = '<strong>Step 2/5:</strong> Clearing cache storage...';
+                
+                // Step 2: Clear Cache Storage
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    await Promise.all(cacheNames.map(name => caches.delete(name)));
+                    console.log('Cleared', cacheNames.length, 'cache(s)');
+                }
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                messageEl.innerHTML = '<strong>Step 3/5:</strong> Unregistering service workers...';
+                
+                // Step 3: Clear Service Workers
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    await Promise.all(registrations.map(reg => reg.unregister()));
+                    console.log('Unregistered', registrations.length, 'service worker(s)');
+                }
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                messageEl.innerHTML = '<strong>Step 4/5:</strong> Clearing localStorage...';
+                
+                // Step 4: Clear localStorage
+                localStorage.clear();
+                console.log('Cleared localStorage');
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                messageEl.innerHTML = '<strong>Step 5/5:</strong> Clearing sessionStorage...';
+                
+                // Step 5: Clear sessionStorage
+                sessionStorage.clear();
+                console.log('Cleared sessionStorage');
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                // Success!
+                statusEl.textContent = '✅';
+                messageEl.innerHTML = `
+                    <div class="success" style="font-size: 20px; font-weight: bold;">
+                        🎉 ALL CACHE CLEARED SUCCESSFULLY! 🎉
+                    </div>
+                    <div class="info" style="margin-top: 20px;">
+                        <strong>NOW DO THIS:</strong><br><br>
+                        1. Close this tab<br>
+                        2. Close ALL tabs with <code>localhost:3000</code><br>
+                        3. Open ONE new tab<br>
+                        4. Go to: <strong>http://localhost:3000</strong><br>
+                        5. Wait 2 minutes and watch console (F12)<br>
+                        6. You should see NO quota errors!
+                    </div>
+                `;
+                
+                console.log('✅ ALL CACHE CLEARED!');
+                
+            } catch (error) {
+                statusEl.textContent = '❌';
+                messageEl.innerHTML = `
+                    <div style="color: red;">
+                        <strong>Error:</strong> ${error.message}<br><br>
+                        Try manually: Press Ctrl+Shift+Delete and clear "All time"
+                    </div>
+                `;
+                console.error('Error:', error);
+            }
+        }
+
+        // Auto-run on page load
+        window.addEventListener('load', () => {
+            document.getElementById('status').textContent = '✋';
+            document.getElementById('message').innerHTML = 
+                '<strong>Ready!</strong> Click the button below to clear all cache.';
+        });
+    </script>
+</body>
+</html>

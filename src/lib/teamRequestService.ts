@@ -8,12 +8,12 @@ import {
   query,
   where,
   orderBy,
-  onSnapshot,
   serverTimestamp,
   Timestamp,
 } from 'firebase/firestore';
 import { db } from './firebase';
 import { TeamMember } from '@/types';
+import { cachedQuery } from './firebaseCache';
 
 const REQUESTS_COLLECTION = 'teamMemberRequests';
 
@@ -50,19 +50,23 @@ export const submitTeamMemberRequest = async (
 };
 
 /**
- * Real-time listener for pending requests
+ * REMOVED: subscribeToPendingRequests (deprecated to prevent quota exhaustion)
+ * Use getPendingRequests() with manual polling instead
  */
-export const subscribeToPendingRequests = (
-  callback: (requests: TeamMemberRequest[]) => void
-) => {
-  const q = query(
-    collection(db, REQUESTS_COLLECTION),
-    where('status', '==', 'pending')
-  );
 
-  return onSnapshot(q, (snapshot) => {
-    const requests: TeamMemberRequest[] = snapshot.docs
-      .map((doc) => {
+/**
+ * Get pending requests (with caching to prevent duplicate reads)
+ */
+export const getPendingRequests = async (): Promise<{ success: boolean; data?: TeamMemberRequest[]; error?: string }> => {
+  try {
+    const data = await cachedQuery('team-requests-pending', async () => {
+      const q = query(
+        collection(db, REQUESTS_COLLECTION),
+        where('status', '==', 'pending')
+      );
+      const snapshot = await getDocs(q);
+
+      const requests = snapshot.docs.map((doc) => {
         const data = doc.data();
         return {
           id: doc.id,
@@ -75,10 +79,17 @@ export const subscribeToPendingRequests = (
           rejectionReason: data.rejectionReason,
           priority: data.priority || 'normal',
         };
-      })
-      .sort((a, b) => b.requestedAt.getTime() - a.requestedAt.getTime()); // Sort on client side
-    callback(requests);
-  });
+      });
+
+      // Sort client-side by requestedAt descending
+      return requests.sort((a, b) => b.requestedAt.getTime() - a.requestedAt.getTime());
+    }, 60000); // Cache for 1 minute
+
+    return { success: true, data };
+  } catch (error) {
+    console.error('Error fetching pending requests:', error);
+    return { success: false, error: String(error) };
+  }
 };
 
 /**
@@ -182,41 +193,8 @@ export const deleteRequest = async (requestId: string): Promise<void> => {
 };
 
 /**
- * Get pending requests (non-realtime fetch)
+ * REMOVED DUPLICATE - Using cached version above
  */
-export const getPendingRequests = async (): Promise<{ success: boolean; data?: TeamMemberRequest[]; error?: string }> => {
-  try {
-    // Remove orderBy to avoid composite index requirement - sort client-side instead
-    const q = query(
-      collection(db, REQUESTS_COLLECTION),
-      where('status', '==', 'pending')
-    );
-    const snapshot = await getDocs(q);
-    
-    const requests: TeamMemberRequest[] = snapshot.docs.map((doc) => {
-      const data = doc.data();
-      return {
-        id: doc.id,
-        memberData: data.memberData,
-        status: data.status,
-        requestedAt: data.requestedAt?.toDate() || new Date(),
-        requestedBy: data.requestedBy,
-        processedAt: data.processedAt?.toDate(),
-        processedBy: data.processedBy,
-        rejectionReason: data.rejectionReason,
-        priority: data.priority || 'normal',
-      };
-    });
-    
-    // Sort client-side by requestedAt descending
-    requests.sort((a, b) => b.requestedAt.getTime() - a.requestedAt.getTime());
-    
-    return { success: true, data: requests };
-  } catch (error) {
-    console.error('Error fetching pending requests:', error);
-    return { success: false, error: String(error) };
-  }
-};
 
 /**
  * Get pending requests count

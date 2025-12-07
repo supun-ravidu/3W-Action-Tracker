@@ -2,7 +2,7 @@
 import { initializeApp, getApps, getApp, FirebaseApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
-import { Firestore, initializeFirestore, memoryLocalCache } from "firebase/firestore";
+import { Firestore, initializeFirestore, memoryLocalCache, persistentLocalCache, persistentMultipleTabManager } from "firebase/firestore";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -35,10 +35,22 @@ function initializeFirebaseApp(): FirebaseApp {
 function initializeFirestoreDb(app: FirebaseApp): Firestore {
   if (cachedDb) return cachedDb;
   
-  // CRITICAL: Initialize with memory-only cache to prevent persistent IndexedDB retries
-  cachedDb = initializeFirestore(app, {
-    localCache: memoryLocalCache()
-  });
+  // CRITICAL: Use persistent cache with aggressive settings to minimize reads
+  try {
+    cachedDb = initializeFirestore(app, {
+      localCache: persistentLocalCache({
+        tabManager: persistentMultipleTabManager()
+      }),
+      experimentalForceLongPolling: true // Forces long polling to reduce connections
+    });
+  } catch (error) {
+    // Fallback to memory cache if persistent cache fails
+    console.warn('Persistent cache failed, using memory cache:', error);
+    cachedDb = initializeFirestore(app, {
+      localCache: memoryLocalCache(),
+      experimentalForceLongPolling: true
+    });
+  }
   
   return cachedDb;
 }

@@ -1,8 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { collection, getDocs, query, orderBy } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { getProjects as fetchProjects } from '@/lib/projectsRealtimeService';
 
 export interface Project {
   id: string;
@@ -39,32 +38,16 @@ export function ProjectsProvider({ children }: { children: ReactNode }) {
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
   const [recentlyAddedIds, setRecentlyAddedIds] = useState<Set<string>>(new Set());
 
-  const fetchProjects = async () => {
+  const loadProjects = async () => {
     try {
-      const q = query(collection(db, 'projects'), orderBy('createdAt', 'desc'));
-      const snapshot = await getDocs(q);
-      
-      const projectsData = snapshot.docs.map((doc) => {
-        const data = doc.data();
-        return {
-          id: doc.id,
-          name: data.name || 'Untitled Project',
-          description: data.description || '',
-          status: data.status || 'active',
-          progress: data.progress || 0,
-          workspace: data.workspace || 'default',
-          actionPlans: data.actionPlans || [],
-          budget: data.budget,
-          ...data,
-        } as Project;
-      });
+      const projectsData = await fetchProjects();
 
       // Identify recently added projects (last 5 minutes)
       const fiveMinutesAgo = Date.now() - 5 * 60 * 1000;
       const recentIds = new Set(
         projectsData
           .filter((p) => {
-            const createdAt = p.createdAt?.toMillis?.() || 0;
+            const createdAt = p.createdAt?.getTime?.() || 0;
             return createdAt > fiveMinutesAgo;
           })
           .map((p) => p.id)
@@ -86,10 +69,10 @@ export function ProjectsProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     // Initial fetch
-    fetchProjects();
+    loadProjects();
     
-    // Poll every 5 minutes to drastically reduce quota usage
-    const interval = setInterval(fetchProjects, 300000);
+    // Poll every 10 minutes to drastically reduce quota usage
+    const interval = setInterval(loadProjects, 600000);
     
     return () => clearInterval(interval);
   }, []);
@@ -101,7 +84,7 @@ export function ProjectsProvider({ children }: { children: ReactNode }) {
         loading,
         isConnected,
         error,
-        refetch: fetchProjects,
+        refetch: loadProjects,
         lastUpdate,
         recentlyAddedIds,
       }}

@@ -54,8 +54,8 @@ export function AdminDashboardProvider({ children }: { children: ReactNode }) {
     // Initial fetch
     fetchAdminStats();
     
-    // Poll every 2 minutes for admin dashboard (more frequent than regular data)
-    const interval = setInterval(fetchAdminStats, 120000);
+    // Poll every 5 minutes for admin dashboard
+    const interval = setInterval(fetchAdminStats, 300000);
     
     return () => clearInterval(interval);
   }, []);

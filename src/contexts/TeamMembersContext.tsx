@@ -65,8 +65,8 @@ export function TeamMembersProvider({ children }: { children: ReactNode }) {
     // Initial fetch only - NO real-time subscription
     fetchMembers();
     
-    // Poll every 3 minutes to reduce quota usage
-    const interval = setInterval(fetchMembers, 180000);
+    // Poll every 30 minutes to drastically reduce quota usage
+    const interval = setInterval(fetchMembers, 1800000);
     
     return () => clearInterval(interval);
   }, []);

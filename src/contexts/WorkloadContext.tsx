@@ -4,9 +4,8 @@ import React, { createContext, useContext, useEffect, useState, ReactNode } from
 import {
   getWorkloadStatistics,
   TeamMemberWorkload,
+  getTeamWorkload,
 } from '@/lib/teamWorkloadService';
-import { collection, getDocs, query } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
 
 interface WorkloadContextType {
   workloads: TeamMemberWorkload[];
@@ -28,36 +27,7 @@ export function WorkloadProvider({ children }: { children: ReactNode }) {
 
   const fetchWorkload = async () => {
     try {
-      const snapshot = await getDocs(query(collection(db, 'teamMembers')));
-      const workloadData: TeamMemberWorkload[] = snapshot.docs.map((doc) => {
-        const data = doc.data();
-        
-        // Use taskCounts if available, otherwise fall back to individual fields
-        const taskCounts = data.taskCounts || {
-          done: data.completedTasks || 0,
-          active: data.inProgressTasks || 0,
-          pending: data.pendingTasks || 0,
-          blocked: data.blockedTasks || 0,
-          total: data.totalTasks || 0,
-        };
-        
-        // If total is not set but individual counts are, calculate it
-        if (!taskCounts.total && (taskCounts.done || taskCounts.active || taskCounts.pending || taskCounts.blocked)) {
-          taskCounts.total = taskCounts.done + taskCounts.active + taskCounts.pending + taskCounts.blocked;
-        }
-        
-        return {
-          memberId: doc.id,
-          memberName: data.name || 'Unknown',
-          email: data.email || '',
-          avatar: data.avatar,
-          role: data.role,
-          department: data.department,
-          taskCounts,
-          recentTasks: [],
-          lastUpdated: new Date(),
-        };
-      });
+      const workloadData = await getTeamWorkload();
       
       setWorkloads(workloadData);
       setStatistics(getWorkloadStatistics(workloadData));
@@ -76,8 +46,8 @@ export function WorkloadProvider({ children }: { children: ReactNode }) {
     // Initial fetch only - NO real-time subscription
     fetchWorkload();
     
-    // Poll every 3 minutes to reduce quota usage
-    const interval = setInterval(fetchWorkload, 180000);
+    // Poll every 30 minutes to drastically reduce quota usage
+    const interval = setInterval(fetchWorkload, 1800000);
     
     return () => clearInterval(interval);
   }, []);

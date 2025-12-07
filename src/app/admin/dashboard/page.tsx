@@ -82,8 +82,8 @@ export default function AdminDashboard() {
     };
 
     loadDashboardData();
-    // Poll every 2 minutes
-    const interval = setInterval(loadDashboardData, 120000);
+    // Poll every 15 minutes to reduce quota usage
+    const interval = setInterval(loadDashboardData, 900000);
 
     return () => clearInterval(interval);
   }, [user]);
