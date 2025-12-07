@@ -9,7 +9,7 @@ export interface Project {
   description: string;
   status: 'active' | 'on-hold' | 'archived';
   progress: number;
-  workspace: string;
+  workspace?: string;
   actionPlans: any[];
   budget?: {
     allocated: number;

@@ -10,7 +10,6 @@ import { Badge } from '@/components/ui/badge';
 import { Textarea } from '@/components/ui/textarea';
 import {
   ProjectRequest,
-  subscribeToPendingProjectRequests,
   approveProjectRequest,
   rejectProjectRequest,
   deleteProjectRequest,
